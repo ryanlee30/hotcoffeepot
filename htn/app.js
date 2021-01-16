@@ -1,8 +1,10 @@
 const express = require("express");
 const http = require("http");
 
-const port = process.env.PORT || 4001;
+const PORT = process.env.PORT || 4001;
 const index = require("./routes/index");
+const PTS_TO_WIN = 10;
+const GameManager = require("./controllers/GameManager");
 
 const app = express();
 app.use(index);
@@ -28,4 +30,11 @@ io.on("connection", socket => {
   })
 });
 
-server.listen(port, () => console.log(`Listening on port ${port}`));
+server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+
+const gameManager = new GameManager(PTS_TO_WIN);
+let one = gameManager.newUser("Marco");
+let two = gameManager.newUser("Ryan");
+gameManager.chooseWinner(one);
+gameManager.chooseWinner(two);
+console.log(gameManager);
