@@ -1,6 +1,7 @@
 
 class User {
-    constructor(name) {
+    constructor(name, uuid) {
+        this.uuid = uuid;
         this.name = name;
         this.points = 0;
         this.hasUploaded = false;
@@ -12,6 +13,10 @@ class User {
 
     setName(name) {
         this.name = name;
+    }
+
+    getUuid() {
+        return this.uuid;
     }
 
     getName() {
@@ -26,3 +31,5 @@ class User {
         return this.hasUploaded;
     }
 }
+
+module.exports = User
