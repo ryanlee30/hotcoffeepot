@@ -15,6 +15,7 @@ const io = require("socket.io")(server, {
     methods: ["GET", "POST"]
   }
 });
+// establish socket connection
 
 io.on("connection", socket => {
   socket.on("start", function() {
