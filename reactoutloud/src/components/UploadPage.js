@@ -3,6 +3,7 @@ import Header from "./Header"
 import TextField from '@material-ui/core/TextField';
 import YouTube from 'react-youtube';
 import Timer from './Timer'
+import UserList from './Userlist'
 
 class UploadPage extends Component {
   constructor(props) {
@@ -36,7 +37,8 @@ class UploadPage extends Component {
       <div>
         <Header title='REACT'/>
         <div class="horizontalStack">
-          <Timer remainingTime={30} totalTime={40}/>
+          <Timer remainingTime={20} totalTime={40}/>
+          <UserList/>
           <YouTube
             videoId={this.state.videoID}
             opts={opts}

@@ -4,21 +4,6 @@ body {
     font-family: "Oxygen", sans-serif;
 }
 
-#timer{
-    .child{
-        gridColumn: 1; 
-        gridRow: 1; 
-        width: 100%; 
-        height: 100%; 
-        color: '#00A6ED'
-    }
-
-    h1{
-        gridColumn: 1; 
-        gridRow: 1; 
-        width: 100%; 
-        height: 100%; 
-        text-align: center;
-        padding-top: 5px
-    }
+#userList{
+    width: 300px;
 }
