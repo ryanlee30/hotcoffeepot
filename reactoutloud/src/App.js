@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import socketIOClient from "socket.io-client";
+import UploadPage from "./components/UploadPage";
 const ENDPOINT = "http://127.0.0.1:4001";
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
 
   return (
     <div>
+      <UploadPage/>
       <p>{timer}</p>
       <button onClick={startTimer}>Start!</button>
     </div>
