@@ -5,6 +5,7 @@ const PORT = process.env.PORT || 4001;
 const index = require("./routes/index");
 const PTS_TO_WIN = 10;
 const GameManager = require("./controllers/GameManager");
+const utils = require("./Utils");
 
 const app = express();
 app.use(index);
@@ -32,9 +33,14 @@ io.on("connection", socket => {
 
 server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
+// Game related
+
 const gameManager = new GameManager(PTS_TO_WIN);
-let one = gameManager.newUser("Marco");
-let two = gameManager.newUser("Ryan");
-gameManager.chooseWinner(one);
-gameManager.chooseWinner(two);
-console.log(gameManager);
+let ryan = gameManager.newUser("ryan");
+let marco = gameManager.newUser("marco");
+let simon = gameManager.newUser("simon");
+let sean = gameManager.newUser("sean");
+let playerSlots = new Array(10).fill(null);
+gameManager.chooseWinner(ryan);
+gameManager.removeUser(simon);
+console.log(gameManager.getUsers());

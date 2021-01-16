@@ -9,14 +9,15 @@ class GameManager {
     }
 
     newUser(name) {
-        let newUser = new User(name, this.users.length+1);
-        this.users.push(newUser);
+        let newUser = new User(name, this.users.length+1)
+        let newUserObject = { user: newUser, points: 0, hasUploaded: false};
+        this.users.push(newUserObject);
         return newUser;
     }
 
     removeUser(user) {
         for (let i = 0; i < this.users.length; i++) {
-            if (this.users[i].getUuid() === user.getUuid()) {
+            if (this.users[i].user.getUuid() === user.getUuid()) {
                 this.users.splice(i,1);
             }
         }
@@ -24,8 +25,8 @@ class GameManager {
 
     chooseWinner(user) {
         for (let i = 0; i < this.users.length; i++) {
-            if (this.users[i].getUuid() === user.getUuid()) {
-                this.users[i].incPoints();
+            if (this.users[i].user.getUuid() === user.getUuid()) {
+                this.users[i].points++;
             }
         }
     }
