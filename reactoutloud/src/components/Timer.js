@@ -5,9 +5,9 @@ import '../styles.scss';
 class Timer extends Component {
   render() {
     return(
-        <div style={{display: 'grid', width: '100px', height: '100px'}}>
+        <div style={{display: 'grid', width: '100px', height: '100px', justifyItems: 'center'}}>
             <h1 style={{gridColumn: 1, gridRow: 1, textAlign: 'center', paddingTop: '5px'}}>{this.props.remainingTime}</h1>
-            <CircularProgress variant="determinate" value={-100 * this.props.remainingTime/this.props.totalTime} style={{gridColumn: 1, gridRow: 1, width: '100%', height: '100%', color: '#00A6ED'}}/>
+            <CircularProgress variant="determinate" value={-100 * this.props.remainingTime/this.props.totalTime} style={{gridColumn: 1, gridRow: 1, width: '100px', height: '100px', color: '#00A6ED'}}/>
         </div>
     );
   }

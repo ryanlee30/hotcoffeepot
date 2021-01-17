@@ -7,9 +7,6 @@ import VideoDisplay from './VideoDisplay'
 class ViewingPage extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      
-    };
     this.handleTextfieldChange = this.handleTextfieldChange.bind(this);
   }
 
@@ -26,7 +23,7 @@ class ViewingPage extends Component {
         <Header title='VIEWING'/>
         <div class="horizontalStack">
           <UserList data={this.props.userListData}/>
-          <VideoDisplay isJudging={false} isChoosing={false}/>
+          <VideoDisplay isJudging={false} isChoosing={false} socket={this.props.socket}/>
           <Timer remainingTime={this.props.timer} totalTime={30}/>
         </div>
       </div>

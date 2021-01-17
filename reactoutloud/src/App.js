@@ -6,6 +6,7 @@ import JudgingPage from "./components/JudgingPage";
 import ViewingPage from "./components/ViewingPage";
 import WaitingPage from "./components/WaitingPage";
 import ResultsPage from "./components/ResultsPage";
+import OngoingPage from "./components/OngoingPage";
 
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button'
@@ -36,7 +37,8 @@ class App extends React.Component {
       gameState: "lobby",
       userData: null,
       userListData: null,
-      isJudge: false
+      isJudge: false,
+      prompt: ""
     };
 
   }
@@ -53,20 +55,26 @@ class App extends React.Component {
     socket.emit("next judge");
   }
 
+  sendVideo() {
+    socket.emit("request video")
+  }
+
   renderPage(gameState){
     switch(gameState){
       case "lobby":
-        return(<LobbyPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined}/>);
+        return(<LobbyPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined} prompt={this.state.prompt}/>);
       case "upload":
         return(this.state.isJudge ?
-          <WaitingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined}/> :
-          <ChoosingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined}/>);
+          <WaitingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined} prompt={this.state.prompt}/> :
+          <ChoosingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined} prompt={this.state.prompt}/>);
       case "review":
         return(this.state.isJudge ?
-          <JudgingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined}/> :
-          <ViewingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined}/>);
+          <JudgingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined} prompt={this.state.prompt}/> :
+          <ViewingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined} prompt={this.state.prompt}/>);
       case "results":
-        return(<ResultsPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined}/>);
+        return(<ResultsPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined} prompt={this.state.prompt}/>);
+      case "ongoing":
+        return(<OngoingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined} prompt={this.state.prompt}/>)
       default:
         return(<h1>UNKNOWN GAME STATE</h1>)
     }
@@ -74,7 +82,8 @@ class App extends React.Component {
 
   componentDidMount() {
     socket.emit("request userListData")
-    
+    socket.emit("request gamestate")
+
     socket.on("userListData", data => {
       console.log("RECEIVED USERLIST DATA")
       this.setState({
@@ -90,6 +99,12 @@ class App extends React.Component {
         timer: time
       })
     });
+
+    socket.on("here is prompt", prompt => {
+      this.setState({
+        prompt: prompt
+      })
+    })
 
     socket.on("userData", data => {
       console.log("RECEIVED USER DATA")
@@ -108,10 +123,16 @@ class App extends React.Component {
     })
 
     socket.on("gameState", newState => {
-      console.log("new game state: " + newState)
-      this.setState({
-        gameState: newState
-      })
+      if (newState != "lobby" && !this.state.hasJoined) {
+        this.setState({
+          gameState: "ongoing"
+        })
+      }
+      else{
+        this.setState({
+          gameState: newState
+        })
+      }
     })
 
     window.addEventListener('beforeunload', function (e) {
@@ -132,6 +153,7 @@ class App extends React.Component {
           <Button onClick={this.startTimer}>Start timer</Button>
           <Button onClick={this.nextGameState}>Next game state (DEBUG)</Button>
           <Button onClick={this.nextJudge}>Next judge (DEBUG)</Button>
+          <Button onClick={this.sendVideo}>Send video (DEBUG)</Button>
         </div>
       </MuiThemeProvider>
     );
