@@ -24,6 +24,10 @@ class GameManager {
         this.clientPlayerSlots[slotNumber-1].score++;
     }
 
+    isJudge(slotNumber){
+        return this.clientPlayerSlots[slotNumber-1].isJudge
+    }
+
     nextJudge() {
         let nonNullClientPlayerSlots = [];
         let currentJudgeIndex = null;

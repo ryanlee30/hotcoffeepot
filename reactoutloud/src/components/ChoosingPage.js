@@ -4,12 +4,9 @@ import Timer from './Timer'
 import UserList from './Userlist'
 import VideoDisplay from './VideoDisplay'
 
-class UploadPage extends Component {
+class ChoosingPage extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      
-    };
     this.handleTextfieldChange = this.handleTextfieldChange.bind(this);
   }
 
@@ -23,10 +20,10 @@ class UploadPage extends Component {
   render() {
     return (
       <div>
-        <Header title='REACTION'/>
+        <Header title='CHOOSING'/>
         <div class="horizontalStack">
-          <UserList data={[null, null, null]}/>
-          <VideoDisplay isJudging={true}/>
+          <UserList data={this.props.userListData}/>
+          <VideoDisplay isJudging={false} isChoosing={true}/>
           <Timer remainingTime={this.props.timer} totalTime={30}/>
         </div>
       </div>
@@ -34,4 +31,4 @@ class UploadPage extends Component {
   }
 }
 
-export default UploadPage
+export default ChoosingPage

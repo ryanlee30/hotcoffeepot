@@ -8,6 +8,8 @@ const PTS_TO_WIN = 10;
 const app = express();
 const server = http.createServer(app);
 const GameManager = require("./controllers/GameManager");
+const StateManager = require("./controllers/StateManager");
+
 const { json } = require("express");
 app.use(index);
 
@@ -23,6 +25,7 @@ server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 // Game related
 
 const gameManager = new GameManager(PTS_TO_WIN);
+const stateManager = new StateManager(PTS_TO_WIN);
 // gameManager.newUser("ryan");
 // gameManager.newUser("marco");
 // gameManager.newUser("simon");
@@ -51,13 +54,37 @@ io.on("connection", socket => {
   socket.on("join", name => {
     console.log(`${name} joined`);
     socket.emit("userData", gameManager.newUser(name));
-    io.sockets.emit("userListData", gameManager.getClientPlayerSlots());
+    updateUserList()
   });
   // when components mount
   socket.on("request userData", () => {
     socket.emit("userListData", gameManager.getClientPlayerSlots());
   });
+
+  socket.on("request isJudge", (slotNumber) => {
+    socket.emit("isJudge", gameManager.isJudge(slotNumber))
+  })
+
+
+  //for debugging
+  socket.on("next judge", () => {
+    gameManager.nextJudge()
+    updateUserList()
+  })
+
+  socket.on("next gamestate", () => {
+    stateManager.nextGameState()
+    updateGameState()
+  })
 });
+
+function updateUserList(){
+  io.sockets.emit("userListData", gameManager.getClientPlayerSlots());
+}
+
+function updateGameState(){
+  io.sockets.emit("gameState", stateManager.getGameState());
+}
 
 // Reddit prompt creation
 const request = require('request')
@@ -71,3 +98,19 @@ request(url, (error, response, body)=> {
     console.log("Got an error: ", error, ", status code: ", response.statusCode);
   }
 });
+
+const firebase = require('./firestore')
+// Firestore
+async function getAllVideoCards() {
+  const db = firebase.firestore();
+  const colRef = db.collection('youtube-data')
+  const col = await colRef.get();
+  var videoCards = []
+  col.forEach(doc => {
+    videoCards.push(doc.data())
+  })
+  console.log(videoCards)
+  return videoCards
+}
+
+// getAllVideoCards()
