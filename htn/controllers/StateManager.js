@@ -7,7 +7,6 @@ class StateManager {
         this.clientPlayerStates = [];
     }
 
-    //Temporary hard coded shit
     nextGameState(clientPlayerSlots) {
         // if game is in lobby state
         if (this.getGameState() === "lobby") {

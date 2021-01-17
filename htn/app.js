@@ -66,6 +66,11 @@ io.on("connection", socket => {
     }
     socket.emit("7 userCards", userCards);
   });
+  // when left
+  socket.on("left", userData => {
+    gameManager.removeUser(userData.slotNumber);
+    updateUserList();
+  })
   // when components mount
   socket.on("request userListData", () => {
     socket.emit("userListData", gameManager.getClientPlayerSlots());
