@@ -72,7 +72,7 @@ class GameManager {
     }
 
     getVideoCards() {
-        return shuffleCards(this.videoCards);
+        return this.shuffleCards(this.videoCards);
     }
 
     popVideoCards() {
@@ -108,7 +108,7 @@ class GameManager {
         }
       
         return array;
-      }
+    }
 }
 
 module.exports = GameManager

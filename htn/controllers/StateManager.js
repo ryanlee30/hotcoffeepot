@@ -9,10 +9,16 @@ class StateManager {
 
     //Temporary hard coded shit
     nextGameState(clientPlayerSlots){
+        // if game over
         for (let player of clientPlayerSlots) {
-            if (player.score === 10) {
-
+            if (player.score === this.ptsToWin) {
+                this.gameStateIndex = 3;
+                return this.getGameState();
             }
+        }
+        // if game not over (2+ rounds)
+        for (let player of clientPlayerSlots) {
+            if (this.getGameState() === "upload")
         }
 
 
@@ -27,46 +33,6 @@ class StateManager {
     getGameState(){
         return gameStates[this.gameStateIndex]
     }
-
-    getClientPlayerStates(clientPlayerSlots) {
-        switch(this.getGameState()) {
-            case "lobby": {
-                for (let player of clientPlayerSlots) {
-                    this.clientPlayerStates.push({slotNumber: player.slotNumber, gameState: "waiting"});
-                }
-            }
-            case "upload": {
-                for (let player of clientPlayerSlots) {
-                    if (!player.isJudge) {
-                        this.clientPlayerStates.push({slotNumber: player.slotNumber, gameState: "choosing"});
-                    } else {
-                        this.clientPlayerStates.push({slotNumber: player.slotNumber, gameState: "waiting"});
-                    }
-                }
-            }
-            case "review": {
-                for (let player of clientPlayerSlots) {
-                    if (!player.isJudge) {
-                        this.clientPlayerStates.push({slotNumber: player.slotNumber, gameState: "viewing"});
-                    } else {
-                        this.clientPlayerStates.push({slotNumber: player.slotNumber, gameState: "judging"});
-                    }
-                }
-            }
-            case "results": {
-                for (let player of clientPlayerSlots) {
-                    if (!player.isJudge) {
-                        this.clientPlayerStates.push({slotNumber: player.slotNumber, gameState: "game_over"});
-                    } else {
-                        this.clientPlayerStates.push({slotNumber: player.slotNumber, gameState: "game_over"});
-                    }
-                }
-            }
-        }
-        return this.clientPlayerStates;
-    }
-
-
 }
 
 module.exports = StateManager
