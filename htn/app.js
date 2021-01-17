@@ -4,13 +4,13 @@ const http = require("http");
 const PORT = process.env.PORT || 4001;
 const index = require("./routes/index");
 const PTS_TO_WIN = 10;
-const GameManager = require("./controllers/GameManager");
 const utils = require("./Utils");
 
 const app = express();
-app.use(index);
-
 const server = http.createServer(app);
+const GameManager = require("./controllers/GameManager");
+const { json } = require("express");
+app.use(index);
 
 const io = require("socket.io")(server, {
   cors: {
@@ -50,4 +50,17 @@ io.on("connection", socket => {
     utils.fillInSlot(gameManager.newUser(name), serverPlayerSlots, clientPlayerSlots);
     socket.emit("joinData", clientPlayerSlots);
   });
+});
+
+// Reddit prompt creation
+const request = require('request')
+     ,url = 'https://www.reddit.com/r/funny/top/.json?count=20'
+
+request(url, (error, response, body)=> {
+  if (!error && response.statusCode === 200) {
+    const redditResponse = JSON.parse(body)["data"]["children"];
+    redditResponse.forEach(obj => console.log(obj["data"]["title"]))
+  } else {
+    console.log("Got an error: ", error, ", status code: ", response.statusCode);
+  }
 });
