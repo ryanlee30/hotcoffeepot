@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import AppBar from '@material-ui/core/AppBar';
+
 
 const colormapping = {
   "UPLOAD": "#848484",
@@ -14,17 +16,17 @@ class Header extends Component {
       this.state={"bgColor": colormapping[this.props.title]}
     }
     else{
-      this.state={"bgColor": "red"}
+      this.state={"bgColor": "gray"}
     }
   }
 
   render() {
     return (
-      <header style={{backgroundColor: this.state.bgColor, padding: '10px'}}>
+      <AppBar position="static" style={{backgroundColor: this.state.bgColor}}>
         <div>
           <h1 style={{paddingLeft: '25px', color: 'white'}}>{this.props.title}</h1>
         </div>
-      </header>
+      </AppBar>
     );
   }
 }
