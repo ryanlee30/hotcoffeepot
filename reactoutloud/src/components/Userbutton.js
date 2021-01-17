@@ -1,8 +1,4 @@
 import React, { Component } from 'react';
-import TextField from '@material-ui/core/TextField';
-import YouTube from 'react-youtube';
-import Timer from './Timer'
-import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon'

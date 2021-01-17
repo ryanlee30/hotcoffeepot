@@ -3,10 +3,6 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import '../styles.scss';
 
 class Timer extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return(
         <div style={{display: 'grid', width: '100px', height: '100px'}}>
