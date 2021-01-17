@@ -28,6 +28,7 @@ class VideoDisplay extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      selectedIndex: -1,
       selectedVideo: null,
       videoList: [realEstateObj, coffeePotObj, realEstateObj, realEstateObj, realEstateObj, realEstateObj, test]
     };
@@ -36,6 +37,7 @@ class VideoDisplay extends Component {
   render() {
     const handleButtonClick = (index) => {
       this.setState({
+        selectedIndex: index,
         selectedVideo: this.state.videoList[index]
       })
     };
@@ -44,6 +46,10 @@ class VideoDisplay extends Component {
       this.setState({
         selectedVideo: null
       })
+    }
+
+    const submitChoice = (selectedIndex) => {
+      console.log(this.state.videoList[selectedIndex])
     }
 
     const opts = {
@@ -65,13 +71,27 @@ class VideoDisplay extends Component {
           {
             this.state.selectedVideo != null ? <YouTube videoId={this.state.selectedVideo.id} opts={opts} onEnd={() => handleVideoEnd()}/> : <div style={{backgroundColor: "gray", width: "866px", height: "488px"}}/>
           }
-          <ButtonGroup disabled={!this.props.isChoosing} style={{paddingTop: '20px', width: '866px'}}>
-              {Object.keys(this.state.videoList).map(key => {
-                  return (
-                      <Button onClick={() => handleButtonClick(key)}>{this.state.videoList[key].name}</Button>
-                  );
-              })}
-          </ButtonGroup>
+          {
+            this.props.isChoosing ? 
+            <div className="horizontalStack">
+              <ButtonGroup style={{paddingTop: '20px', width: '866px'}}>
+                  {Object.keys(this.state.videoList).map(key => {
+                      return (
+                          <Button onClick={() => handleButtonClick(key)} variant={this.state.selectedIndex === key ? "outlined" : "contained"}>{this.state.videoList[key].name}</Button>
+                      );
+                  })}
+              </ButtonGroup> 
+
+              <Button color="primary"
+                      variant="contained" 
+                      disabled={this.state.selectedIndex == -1} 
+                      onClick={() => submitChoice(this.state.selectedIndex)} 
+                      style={{height: "50px", color: "white"}}>{this.props.isJudging ? "Choose Winner" : "Submit"}</Button>
+            </div>
+            : <span/>
+          }
+
+          
       </div>
     );
   }

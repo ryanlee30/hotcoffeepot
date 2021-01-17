@@ -117,6 +117,10 @@ io.on("connection", socket => {
     stateManager.nextGameState(gameManager.getClientPlayerSlots());
     updateGameState();
   })
+
+  socket.on("request gamestate", () => {
+    socket.emit("gameState", stateManager.getGameState());
+  })
 });
 
 function updateUserList(){

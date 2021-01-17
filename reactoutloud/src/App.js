@@ -6,6 +6,7 @@ import JudgingPage from "./components/JudgingPage";
 import ViewingPage from "./components/ViewingPage";
 import WaitingPage from "./components/WaitingPage";
 import ResultsPage from "./components/ResultsPage";
+import OngoingPage from "./components/OngoingPage";
 
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button'
@@ -65,6 +66,8 @@ class App extends React.Component {
           <ViewingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined}/>);
       case "results":
         return(<ResultsPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined}/>);
+      case "ongoing":
+        return(<OngoingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined}/>)
       default:
         return(<h1>UNKNOWN GAME STATE</h1>)
     }
@@ -72,7 +75,8 @@ class App extends React.Component {
 
   componentDidMount() {
     socket.emit("request userListData")
-    
+    socket.emit("request gamestate")
+
     socket.on("userListData", data => {
       console.log("RECEIVED USERLIST DATA")
       this.setState({
@@ -106,10 +110,16 @@ class App extends React.Component {
     })
 
     socket.on("gameState", newState => {
-      console.log("new game state: " + newState)
-      this.setState({
-        gameState: newState
-      })
+      if (newState != "lobby" && !this.state.hasJoined) {
+        this.setState({
+          gameState: "ongoing"
+        })
+      }
+      else{
+        this.setState({
+          gameState: newState
+        })
+      }
     })
   }
 
