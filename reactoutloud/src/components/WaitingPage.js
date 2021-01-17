@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
 import { TextField, Button, Divider } from '@material-ui/core';
-import List from '@material-ui/core/List';
 import UserList from './Userlist'
 import Timer from './Timer'
 import Header from './Header'
-import socketIOClient from "socket.io-client";
 import '../styles.scss';
-
-// const ENDPOINT = "http://127.0.0.1:4001";
-// const socket = socketIOClient(ENDPOINT);
 
 class WaitingPage extends Component {
     constructor(props) {
@@ -21,10 +16,15 @@ class WaitingPage extends Component {
       };
       this.handleTextFieldChange = this.handleTextFieldChange.bind(this);
       this.joinGame = this.joinGame.bind(this);
+      this.nextJudge = this.nextJudge.bind(this);
     }
 
     joinGame() {
         this.props.socket.emit("join", this.state.userName);
+    }
+
+    nextJudge() {
+        this.props.socket.emit("next judge");
     }
     
     handleTextFieldChange(event) {
@@ -39,7 +39,7 @@ class WaitingPage extends Component {
             <div>
                 <Header title='WAITING'/>
                 <div class="horizontalStack">
-                    <UserList data={this.props.userData}/>
+                    <UserList data={this.props.userListData}/>
                     <div class="verticalStack">
                         <TextField 
                             color="primary"
@@ -54,10 +54,14 @@ class WaitingPage extends Component {
                             color="primary"
                             variant="contained" 
                             onClick={this.joinGame} 
-                            disabled={this.state.hasJoined || this.state.userName === ""}
-                            style={{width: "200px", color: "white"}}
-                        >Join</Button>
+                            disabled={this.props.hasJoined || this.state.userName === ""}
+                            style={{width: "200px", color: "white"}}>Join</Button>
 
+                        <Button 
+                            color="primary"
+                            variant="contained" 
+                            onClick={this.nextJudge} 
+                            style={{width: "200px", color: "white"}}>Next Judge (DEBUG)</Button>
                     </div>
                     <Timer remainingTime={this.props.timer} totalTime={30}/>
                 </div>

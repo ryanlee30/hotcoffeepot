@@ -9,6 +9,12 @@ const NUM_OF_CARDS = 7;
 const app = express();
 const server = http.createServer(app);
 const GameManager = require("./controllers/GameManager");
+<<<<<<< HEAD
+=======
+const StateManager = require("./controllers/StateManager");
+
+const { json } = require("express");
+>>>>>>> 693fa6409e3573342b47d29eca64bc17f92bb6ff
 app.use(index);
 
 const io = require("socket.io")(server, {
@@ -23,9 +29,13 @@ server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 // Game related
 
 const gameManager = new GameManager(PTS_TO_WIN);
+<<<<<<< HEAD
 // put in video cards from firestore in below function
 gameManager.initializeVideoCards();
 gameManager.getVideoCards();
+=======
+const stateManager = new StateManager(PTS_TO_WIN);
+>>>>>>> 693fa6409e3573342b47d29eca64bc17f92bb6ff
 // gameManager.newUser("ryan");
 // gameManager.newUser("marco");
 // gameManager.newUser("simon");
@@ -56,7 +66,7 @@ io.on("connection", socket => {
   socket.on("join", name => {
     console.log(`${name} joined`);
     socket.emit("userData", gameManager.newUser(name));
-    io.sockets.emit("userListData", gameManager.getClientPlayerSlots());
+    updateUserList()
   });
   // when components mount
   socket.on("request userData", () => {
@@ -100,13 +110,38 @@ io.on("connection", socket => {
       io.sockets.emit("everyone submitted", gameManager.getPresentationVideoCards());
     }
   });
+  
+  socket.on("request isJudge", (slotNumber) => {
+    socket.emit("isJudge", gameManager.isJudge(slotNumber))
+  })
+
+
+  //for debugging
+  socket.on("next judge", () => {
+    gameManager.nextJudge()
+    updateUserList()
+  })
+
+  socket.on("next gamestate", () => {
+    stateManager.nextGameState()
+    updateGameState()
+  })
 });
+
+function updateUserList(){
+  io.sockets.emit("userListData", gameManager.getClientPlayerSlots());
+}
+
+function updateGameState(){
+  io.sockets.emit("gameState", stateManager.getGameState());
+}
 
 // Reddit prompt creation
 function getRedditPrompt() {
   const request = require('request')
      ,url = 'https://www.reddit.com/r/funny/top/.json?count=20'
 
+<<<<<<< HEAD
   request(url, (error, response, body)=> {
     if (!error && response.statusCode === 200) {
       const redditResponse = JSON.parse(body)["data"]["children"];
@@ -119,3 +154,29 @@ function getRedditPrompt() {
   });
 }
 
+=======
+request(url, (error, response, body)=> {
+  if (!error && response.statusCode === 200) {
+    const redditResponse = JSON.parse(body)["data"]["children"];
+    // redditResponse.forEach(obj => console.log(obj["data"]["title"]))
+  } else {
+    console.log("Got an error: ", error, ", status code: ", response.statusCode);
+  }
+});
+
+const firebase = require('./firestore')
+// Firestore
+async function getAllVideoCards() {
+  const db = firebase.firestore();
+  const colRef = db.collection('youtube-data')
+  const col = await colRef.get();
+  var videoCards = []
+  col.forEach(doc => {
+    videoCards.push(doc.data())
+  })
+  console.log(videoCards)
+  return videoCards
+}
+
+// getAllVideoCards()
+>>>>>>> 693fa6409e3573342b47d29eca64bc17f92bb6ff

@@ -3,10 +3,11 @@ import AppBar from '@material-ui/core/AppBar';
 
 
 const colormapping = {
-  "UPLOAD": "#848484",
+  "CHOOSING": "#DB5461",
   "WAITING": "#848484",
   "JUDGING": "#8472C0",
-  "WINNER": "#FDE74C"
+  "VIEWING": "#62A786",
+  "RESULTS": "#FDE74C"
 }
 
 class Header extends Component {
