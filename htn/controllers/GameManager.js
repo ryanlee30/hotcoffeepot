@@ -4,6 +4,9 @@ class GameManager {
         this.whoIsJudge = null;
         this.isGameOver = false;
         this.clientPlayerSlots = new Array(10).fill(null);
+        this.videoCards = [];
+        this.presentationVideoCards = [];
+        this.isFirstRound = true;
     }
 
     newUser(name) {
@@ -18,6 +21,10 @@ class GameManager {
 
     removeUser(slotNumber) {
         this.clientPlayerSlots[slotNumber-1] = null;
+    }
+
+    initializeVideoCards(videoCards) {
+        this.videoCards = videoCards;
     }
 
     chooseWinner(slotNumber) {
@@ -54,6 +61,49 @@ class GameManager {
     getClientPlayerSlots() {
         return this.clientPlayerSlots;
     }
+
+    getVideoCards() {
+        return shuffleCards(this.videoCards);
+    }
+
+    popVideoCards() {
+        return this.videoCards.pop();
+    }
+
+    getPresentationVideoCards() {
+        return this.presentationVideoCards;
+    }
+
+    pushPresentationVideoCards(card) {
+        this.presentationVideoCards.push(card);
+    }
+
+    clearPresentationVideoCards() {
+        this.presentationVideoCards = [];
+    }
+
+    getIsFirstRound() {
+        return this.isFirstRound;
+    }
+
+    shuffleCards(array) {
+        var currentIndex = array.length, temporaryValue, randomIndex;
+      
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex) {
+      
+          // Pick a remaining element...
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex -= 1;
+      
+          // And swap it with the current element.
+          temporaryValue = array[currentIndex];
+          array[currentIndex] = array[randomIndex];
+          array[randomIndex] = temporaryValue;
+        }
+      
+        return array;
+      }
 }
 
 module.exports = GameManager
