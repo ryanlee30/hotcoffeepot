@@ -35,7 +35,8 @@ class App extends React.Component {
       gameState: "lobby",
       userData: null,
       userListData: null,
-      isJudge: false
+      isJudge: false,
+      prompt: ""
     };
 
   }
@@ -55,19 +56,19 @@ class App extends React.Component {
   renderPage(gameState){
     switch(gameState){
       case "lobby":
-        return(<LobbyPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined}/>);
+        return(<LobbyPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined} prompt={this.state.prompt}/>);
       case "upload":
         return(this.state.isJudge ?
-          <WaitingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined}/> :
-          <ChoosingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined}/>);
+          <WaitingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined} prompt={this.state.prompt}/> :
+          <ChoosingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined} prompt={this.state.prompt}/>);
       case "review":
         return(this.state.isJudge ?
-          <JudgingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined}/> :
-          <ViewingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined}/>);
+          <JudgingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined} prompt={this.state.prompt}/> :
+          <ViewingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined} prompt={this.state.prompt}/>);
       case "results":
-        return(<ResultsPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined}/>);
+        return(<ResultsPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined} prompt={this.state.prompt}/>);
       case "ongoing":
-        return(<OngoingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined}/>)
+        return(<OngoingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined} prompt={this.state.prompt}/>)
       default:
         return(<h1>UNKNOWN GAME STATE</h1>)
     }
@@ -92,6 +93,12 @@ class App extends React.Component {
         timer: time
       })
     });
+
+    socket.on("here is prompt", prompt => {
+      this.setState({
+        prompt: prompt
+      })
+    })
 
     socket.on("userData", data => {
       console.log("RECEIVED USER DATA")

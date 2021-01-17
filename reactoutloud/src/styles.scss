@@ -12,7 +12,8 @@ body {
     display: flex;
     flex-direction: row;
     & > * {
-        padding: 20px
+        padding: 20px;
+        flex-grow: 1
     }
 }
 
@@ -22,6 +23,6 @@ body {
     flex-grow: 1;
     align-items: center;
     & > * {
-        padding: 20px
+        padding: 20px;
     }
 }
