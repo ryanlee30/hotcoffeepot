@@ -29,8 +29,6 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
-    this.socket.emit = this.socket.emit.bind(this);
-
     this.state = {
       timer: "30",
       hasJoined: false,
@@ -134,13 +132,6 @@ class App extends React.Component {
         })
       }
     })
-
-    window.addEventListener('beforeunload', function (e) {
-      // Cancel the event
-      e.preventDefault(); // If you prevent default behavior in Mozilla Firefox prompt will always be shown
-      // Chrome requires returnValue to be set
-      e.returnValue = '';
-    });
   }
 
   render() {

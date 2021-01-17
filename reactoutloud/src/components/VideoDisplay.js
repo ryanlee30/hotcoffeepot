@@ -42,6 +42,9 @@ class VideoDisplay extends Component {
           })
         }
     })
+    this.props.socket.on("7 userCards", userCards => {
+      console.log(userCards);
+    })
   }
 
   render() {

@@ -12,14 +12,28 @@ class LobbyPage extends Component {
         selectedIndex: -1,
         data: [null, null, null, null, null, null, null, null, null, null],
         hasJoined: false,
-        userName: ""
+        userName: "",
+        ready: false,
       };
       this.handleTextFieldChange = this.handleTextFieldChange.bind(this);
       this.joinGame = this.joinGame.bind(this);
+      this.startGame = this.startGame.bind(this);
+    }
+
+    componentDidMount() {
+        this.props.socket.on("check ready", () => {
+            this.setState({
+                ready: true
+            })
+        })
     }
 
     joinGame() {
         this.props.socket.emit("join", this.state.userName);
+    }
+
+    startGame() {
+        this.props.socket.emit("start game", "");
     }
     
     handleTextFieldChange(event) {
@@ -51,7 +65,12 @@ class LobbyPage extends Component {
                             onClick={this.joinGame} 
                             disabled={this.props.hasJoined || this.state.userName === ""}
                             style={{width: "200px", color: "white"}}>Join</Button>
-
+                        <Button 
+                            color="primary"
+                            variant="contained" 
+                            onClick={this.startGame} 
+                            disabled={!this.state.ready}
+                            style={{width: "200px", color: "white"}}>Start</Button>
                     </div>
                     <Timer remainingTime={this.props.timer} totalTime={30}/>
                 </div>
