@@ -25,8 +25,8 @@ server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 const gameManager = new GameManager(PTS_TO_WIN);
 // put in video cards from firestore in below function
-gameManager.initializeVideoCards();
-gameManager.getVideoCards();
+// gameManager.initializeVideoCards();
+// gameManager.getVideoCards();
 const stateManager = new StateManager(PTS_TO_WIN);
 // gameManager.newUser("ryan");
 // gameManager.newUser("marco");
@@ -95,7 +95,7 @@ io.on("connection", socket => {
       io.sockets.emit("everyone submitted", gameManager.getPresentationVideoCards());
     }
     // shuffles cards
-    gameManager.getVideoCards();
+    // gameManager.getVideoCards();
     // give each person in clientplayerslots 1 card;
     socket.emit("1 userCard", gameManager.popVideoCards());
   });

@@ -1,4 +1,4 @@
-gameStates = ["waiting", "upload", "review", "results"]
+gameStates = ["lobby", "upload", "review", "results"]
 
 class StateManager {
     constructor() {
