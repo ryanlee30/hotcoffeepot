@@ -1,28 +1,65 @@
 import React, { useState, useEffect } from "react";
 import socketIOClient from "socket.io-client";
 import UploadPage from "./components/UploadPage";
+import WaitingPage from "./components/WaitingPage";
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+
 const ENDPOINT = "http://127.0.0.1:4001";
+const socket = socketIOClient(ENDPOINT);
 
-function App() {
-  const [timer, setTimer] = useState("30");
-  const socket = socketIOClient(ENDPOINT);
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: "#00A6ED"
+    },
+    secondary: {
+      main: "#62A786"
+    },
+  },
+});
 
-  useEffect(() => {
-    socket.on("timer", time => {
-      setTimer(time);
-    });
-  }, []);
+class App extends React.Component {
+  constructor(props) {
+    super(props);
 
-  function startTimer() {
-    socket.emit("start", "");
+    this.state = {
+      timer: "30"
+    };
   }
 
-  return (
-    <div>
-      <UploadPage timer={timer}/>
-      <button onClick={startTimer}>Start!</button>
-    </div>
-  );
+  startTimer() {
+    socket.emit("start");
+  }
+
+  componentDidMount() {
+    socket.emit("request userData")
+    
+    socket.on("userData", data => {
+      console.log("RECEIVED USER DATA")
+      this.setState({
+          data: data,
+          hasJoined: true,
+      })
+    });
+
+    socket.on("timer", time => {
+      this.setState({
+        timer: time
+      })
+    });
+  }
+
+  render(){
+    return (
+      <MuiThemeProvider theme={theme}>
+        <div>
+          <WaitingPage timer={this.state.timer} userData={this.state.data} socket={socket}/>
+          <button onClick={this.startTimer}>Start!</button>
+        </div>
+      </MuiThemeProvider>
+    );
+  }
+  
 }
 
 export default App;

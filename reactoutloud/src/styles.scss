@@ -15,3 +15,13 @@ body {
         padding: 20px
     }
 }
+
+.verticalStack{
+    display:flex;
+    flex-direction: column;
+    flex-grow: 1;
+    align-items: center;
+    & > * {
+        padding: 20px
+    }
+}
