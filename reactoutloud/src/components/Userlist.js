@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
+import { TextField } from '@material-ui/core';
 import List from '@material-ui/core/List';
 import Userbutton from './Userbutton'
 import socketIOClient from "socket.io-client";
 const ENDPOINT = "http://127.0.0.1:4001";
 const socket = socketIOClient(ENDPOINT);
 
+
 class UserList extends Component {
     constructor(props) {
       super(props);
       this.state = {
         selectedIndex: -1,
-        data: []
+        data: [],
+        hasJoined: false,
       };
     }
 
@@ -18,12 +21,13 @@ class UserList extends Component {
         socket.on("joinData", data => {
             this.setState({
                 data: data,
+                hasJoined: true,
             })
         });
     }
 
     joinGame() {
-        socket.emit("join", "hello");
+        socket.emit("join", document.getElementById("outlined-basic").value);
     }
   
     render() {        
@@ -42,7 +46,8 @@ class UserList extends Component {
                     );
                 })}
                 </List>
-                <button onClick={this.joinGame}>Join</button>
+                <TextField id="outlined-basic" label="name" variant="outlined"/>
+                <button onClick={this.joinGame} disabled={this.state.hasJoined}>Join</button>
             </div>
         );
     }
