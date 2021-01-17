@@ -41,8 +41,6 @@ const stateManager = new StateManager(PTS_TO_WIN);
 // gameManager.nextJudge();
 // console.log(gameManager.getClientPlayerSlots());
 
-
-
 io.on("connection", socket => {
   // timer
   socket.on("start", function() {
@@ -50,6 +48,7 @@ io.on("connection", socket => {
     let timer = setInterval(() => {
       if (counter <= 0) {
         clearInterval(timer);
+        io.sockets.emit("next state", stateManager.getClientPlayerStates(gameManager.getClientPlayerSlots));
       }
       io.sockets.emit("timer", counter--);
     }, 1000);
@@ -67,7 +66,7 @@ io.on("connection", socket => {
     socket.emit("7 userCards", userCards);
   });
   // when components mount
-  socket.on("request userListData", () => {
+  socket.on("request userData", () => {
     socket.emit("userListData", gameManager.getClientPlayerSlots());
   });
   // when the game has officially started by someone pressing start game button
@@ -92,6 +91,7 @@ io.on("connection", socket => {
   socket.on("choose card", cardData => {
     gameManager.pushPresentationVideoCards(cardData);
     if (gameManager.getPresentationVideoCards().length === gameManager.getClientPlayerSlots().length) {
+      // this is for the judge, and is invoked when everyone has submitted
       io.sockets.emit("everyone submitted", gameManager.getPresentationVideoCards());
     }
     // shuffles cards
@@ -104,15 +104,16 @@ io.on("connection", socket => {
     socket.emit("isJudge", gameManager.isJudge(slotNumber))
   })
 
+
   //for debugging
   socket.on("next judge", () => {
-    gameManager.nextJudge()
-    updateUserList()
+    gameManager.nextJudge();
+    updateUserList();
   })
 
   socket.on("next gamestate", () => {
-    stateManager.nextGameState()
-    updateGameState()
+    stateManager.nextGameState();
+    updateGameState();
   })
 });
 

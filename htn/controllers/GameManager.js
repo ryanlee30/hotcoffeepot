@@ -53,9 +53,15 @@ class GameManager {
         for (let player of this.clientPlayerSlots) {
             if (player) {
                 if (nonNullClientPlayerSlots[currentJudgeIndex+1] === undefined) {
-                    player.isJudge = player.slotNumber === nonNullClientPlayerSlots[0].slotNumber;
+                    if (player.slotNumber === nonNullClientPlayerSlots[0].slotNumber) {
+                        player.isJudge = true;
+                        this.whoIsJudge = player;
+                    }
                 } else {
-                    player.isJudge = player.slotNumber === nonNullClientPlayerSlots[currentJudgeIndex+1].slotNumber;
+                    if (player.slotNumber === nonNullClientPlayerSlots[currentJudgeIndex+1].slotNumber) {
+                        player.isJudge = true;
+                        this.whoIsJudge = player;
+                    };
                 }
             }
         }
