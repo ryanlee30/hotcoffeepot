@@ -5,6 +5,7 @@ const PORT = process.env.PORT || 4001;
 const index = require("./routes/index");
 const PTS_TO_WIN = 10;
 const NUM_OF_CARDS = 7;
+const firebase = require('./firestore')
 
 const app = express();
 const server = http.createServer(app);
@@ -24,6 +25,8 @@ server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 // Game related
 
 const gameManager = new GameManager(PTS_TO_WIN);
+getAllVideoCards().then(data => {
+  gameManager.initializeVideoCards(data)});
 // put in video cards from firestore in below function
 // gameManager.initializeVideoCards();
 // gameManager.getVideoCards();
@@ -42,22 +45,13 @@ const stateManager = new StateManager(PTS_TO_WIN);
 // console.log(gameManager.getClientPlayerSlots());
 
 io.on("connection", socket => {
-  // timer
-  socket.on("start", function() {
-    let counter = 30;
-    let timer = setInterval(() => {
-      if (counter <= 0) {
-        clearInterval(timer);
-        stateManager.nextGameState(gameManager.getClientPlayerSlots());
-        updateGameState();
-      }
-      io.sockets.emit("timer", counter--);
-    }, 1000);
-  });
   // when joined
   socket.on("join", name => {
     console.log(`${name} joined`);
     socket.emit("userData", gameManager.newUser(name));
+    if (gameManager.checkAtLeastThree()) {
+      io.sockets.emit("check ready");
+    }
     updateUserList();
     // give each person in clientplayerslots 7 cards;
     let userCards = [];
@@ -77,7 +71,11 @@ io.on("connection", socket => {
   });
   // when the game has officially started by someone pressing start game button
   socket.on("start game", () => {
-    io.sockets.emit("game has started", "");
+    stateManager.nextGameState();
+    updateGameState();
+    startTimer();
+    gameManager.nextJudge();
+    updateUserList();
   })
   // after winner has been chosen and next round starts
   socket.on("next round", () => {
@@ -139,6 +137,18 @@ function updateGameState(){
   io.sockets.emit("gameState", stateManager.getGameState());
 }
 
+function startTimer() {
+  let counter = 30;
+    let timer = setInterval(() => {
+      if (counter <= 0) {
+        clearInterval(timer);
+        stateManager.nextGameState(gameManager.getClientPlayerSlots());
+        updateGameState();
+      }
+      io.sockets.emit("timer", counter--);
+    }, 1000);
+}
+
 // Reddit prompt creation
 function getRedditPrompt() {
   const request = require('request')
@@ -155,8 +165,6 @@ function getRedditPrompt() {
     }
   });
 }
-
-const firebase = require('./firestore')
 // Firestore
 async function getAllVideoCards() {
   const db = firebase.firestore();
@@ -166,6 +174,5 @@ async function getAllVideoCards() {
   col.forEach(doc => {
     videoCards.push(doc.data())
   })
-  console.log(videoCards)
   return videoCards
 }

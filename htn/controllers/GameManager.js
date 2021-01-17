@@ -18,6 +18,12 @@ class GameManager {
         }
     }
 
+    checkAtLeastThree() {
+        return this.clientPlayerSlots.filter((player) => {
+            return player !== null;
+        }).length >= 3;
+    }
+
     removeUser(slotNumber) {
         this.clientPlayerSlots[slotNumber-1] = null;
     }
