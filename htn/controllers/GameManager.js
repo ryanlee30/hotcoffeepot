@@ -1,48 +1,58 @@
-const User = require("./User");
-
 class GameManager {
     constructor(ptsToWin) {
-        this.users = [];
         this.ptsToWin = ptsToWin;
         this.whoIsJudge = null;
         this.isGameOver = false;
+        this.clientPlayerSlots = new Array(10).fill(null);
     }
 
     newUser(name) {
-        let newUser = new User(name, this.users.length+1)
-        let newUserObject = { user: newUser, points: 0, hasUploaded: false};
-        this.users.push(newUserObject);
-        return newUser;
-    }
-
-    removeUser(user) {
-        for (let i = 0; i < this.users.length; i++) {
-            if (this.users[i].user.getUuid() === user.getUuid()) {
-                this.users.splice(i,1);
+        for (let i = 0; i < this.clientPlayerSlots.length; i++) {
+            if (!this.clientPlayerSlots[i]) {
+                let userObject = {name: name, score: 0, slotNumber: i+1, isJudge: false}
+                this.clientPlayerSlots[i] = userObject;
+                return userObject;
             }
         }
     }
 
-    chooseWinner(user) {
-        for (let i = 0; i < this.users.length; i++) {
-            if (this.users[i].user.getUuid() === user.getUuid()) {
-                this.users[i].points++;
-            }
-        }
+    removeUser(slotNumber) {
+        this.clientPlayerSlots[slotNumber-1] = null;
+    }
+
+    chooseWinner(slotNumber) {
+        this.clientPlayerSlots[slotNumber-1].score++;
     }
 
     nextJudge() {
-        let nextJudge = this.users[this.users.indexOf(this.whoIsJudge)+1];
-        if (!nextJudge) {
-            this.whoIsJudge = this.users[0];
-        } else {
-            this.whoIsJudge = nextJudge;
+        let nonNullClientPlayerSlots = [];
+        let currentJudgeIndex = null;
+        for (let player of this.clientPlayerSlots) {
+            if (player) {
+                nonNullClientPlayerSlots.push(player);
+            }
         }
-        console.log(this.whoIsJudge);
+        for (let i = 0; i < nonNullClientPlayerSlots.length; i++) {
+            if (nonNullClientPlayerSlots[i].isJudge) {
+                currentJudgeIndex = i;
+            }
+        }
+        if (currentJudgeIndex === null) {
+            currentJudgeIndex = -1;
+        }
+        for (let player of this.clientPlayerSlots) {
+            if (player) {
+                if (nonNullClientPlayerSlots[currentJudgeIndex+1] === undefined) {
+                    player.isJudge = player.slotNumber === nonNullClientPlayerSlots[0].slotNumber;
+                } else {
+                    player.isJudge = player.slotNumber === nonNullClientPlayerSlots[currentJudgeIndex+1].slotNumber;
+                }
+            }
+        }
     }
 
-    getUsers() {
-        return this.users;
+    getClientPlayerSlots() {
+        return this.clientPlayerSlots;
     }
 }
 
