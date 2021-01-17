@@ -32,7 +32,7 @@ class OngoingPage extends Component {
     render() {
         return (
             <div>
-                <Header title='ONGOING'/>
+                <Header title='ONGOING' prompt={this.props.prompt}/>
                 <div class="horizontalStack">
                     <UserList data={this.props.userListData}/>
                     <div class="verticalStack">

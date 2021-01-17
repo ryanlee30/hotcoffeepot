@@ -52,6 +52,7 @@ class VideoDisplay extends Component {
       }
     })
     this.props.socket.on("everyone submitted", presentationCards => {
+      console.log(presentationCards)
       if (this.props.isJudging) {
         this.setState({
           videoList: presentationCards
@@ -78,7 +79,12 @@ class VideoDisplay extends Component {
     }
 
     const submitChoice = (selectedIndex) => {
-      this.props.socket.emit("choose card", this.state.videoList[selectedIndex]);
+      if(!this.props.isJudging){
+        this.props.socket.emit("choose card", this.props.userData.slotNumber, this.state.videoList[selectedIndex]);
+      }
+      else{
+        this.props.socket.emit("choose winner", selectedIndex)
+      }
     }
 
     const opts = {
@@ -106,7 +112,9 @@ class VideoDisplay extends Component {
               <ButtonGroup style={{paddingTop: '20px', width: '866px'}}>
                   {Object.keys(this.state.videoList).map(key => {
                       return (
-                          <Button onClick={() => handleButtonClick(key)} variant={this.state.selectedIndex === key ? "outlined" : "contained"}>{this.state.videoList[key].name}</Button>
+                          this.state.videoList[key] ? 
+                          <Button onClick={() => handleButtonClick(key)} variant={this.state.selectedIndex === key ? "outlined" : "contained"}>{this.state.videoList[key].name}</Button> :
+                          <Button disabled variant={"outlined"}>Not available</Button>
                       );
                   })}
               </ButtonGroup> 

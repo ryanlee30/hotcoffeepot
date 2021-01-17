@@ -5,7 +5,7 @@ class GameManager {
         this.isGameOver = false;
         this.clientPlayerSlots = new Array(10).fill(null);
         this.videoCards = [];
-        this.presentationVideoCards = [];
+        this.presentationVideoCards = new Array(10).fill(null);
     }
 
     newUser(name) {
@@ -103,12 +103,13 @@ class GameManager {
         return this.presentationVideoCards;
     }
 
-    pushPresentationVideoCards(card) {
-        this.presentationVideoCards.push(card);
+    pushPresentationVideoCards(slotNumber, card) {
+        // this.presentationVideoCards.push(card);
+        this.presentationVideoCards[slotNumber] = card
     }
 
     clearPresentationVideoCards() {
-        this.presentationVideoCards = [];
+        this.presentationVideoCards = new Array(10).fill(null);
     }
 
     shuffleCards(array) {

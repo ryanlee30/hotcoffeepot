@@ -46,7 +46,7 @@ class LobbyPage extends Component {
     render() {
         return (
             <div>
-                <Header title='LOBBY'/>
+                <Header title='LOBBY' prompt={this.props.prompt}/>
                 <div class="horizontalStack">
                     <UserList data={this.props.userListData}/>
                     <div class="verticalStack">

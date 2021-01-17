@@ -20,10 +20,10 @@ class ViewingPage extends Component {
   render() {
     return (
       <div>
-        <Header title='VIEWING'/>
+        <Header title='VIEWING' prompt={this.props.prompt}/>
         <div class="horizontalStack">
           <UserList data={this.props.userListData}/>
-          <VideoDisplay isJudging={false} isChoosing={false} socket={this.props.socket}/>
+          <VideoDisplay isJudging={false} isChoosing={false} socket={this.props.socket} userData={this.props.userData}/>
           <Timer remainingTime={this.props.timer} totalTime={30}/>
         </div>
       </div>

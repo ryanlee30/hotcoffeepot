@@ -32,7 +32,7 @@ class ResultsPage extends Component {
     render() {
         return (
             <div>
-                <Header title='RESULTS'/>
+                <Header title='RESULTS' prompt={this.props.prompt}/>
                 <div class="horizontalStack">
                     <UserList data={this.props.userListData}/>
                     <div class="verticalStack">

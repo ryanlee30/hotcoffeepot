@@ -32,7 +32,7 @@ class WaitingPage extends Component {
     render() {
         return (
             <div>
-                <Header title='WAITING'/>
+                <Header title='WAITING' prompt={this.props.prompt}/>
                 <div class="horizontalStack">
                     <UserList data={this.props.userListData}/>
                     <div class="verticalStack">

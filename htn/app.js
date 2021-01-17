@@ -66,10 +66,11 @@ io.on("connection", socket => {
   });
   // when the game has officially started by someone pressing start game button
   socket.on("start game", () => {
-    stateManager.nextGameState();
+    stateManager.nextGameState(gameManager.getClientPlayerSlots());
     updateGameState();
     timerPtr = startTimer();
     gameManager.nextJudge();
+    io.sockets.emit("here is prompt", getRedditPrompt());
     updateUserList();
   })
   socket.on("request cards", () => {
@@ -83,21 +84,23 @@ io.on("connection", socket => {
   // after winner has been chosen and next round starts
   socket.on("next round", () => {
     io.sockets.emit("next round started", "");
-    io.sockets.emit("here is prompt", getRedditPrompt());
   })
+
   // when a judge has chosen the winner
   socket.on("choose winner", winnerSlotNumber => {
     // increment a user's score, this one is only for the judge
     gameManager.chooseWinner(winnerSlotNumber);
-    // broadcast to all clients who winner was
-    io.sockets.emit("winner", gameManager.getClientPlayerSlots);
-    // clear presentation video cards arrary for next round
-    gameManager.clearPresentationVideoCards();
+    stateManager.nextGameState(gameManager.getClientPlayerSlots());
+    updateGameState();
+    timerPtr = startTimer();
+    gameManager.nextJudge();
+    io.sockets.emit("here is prompt", getRedditPrompt());
+    updateUserList();
   });
   // when a client has finished choosing their card
-  socket.on("choose card", cardData => {
-    gameManager.pushPresentationVideoCards(cardData);
-    if (gameManager.getPresentationVideoCards().length === gameManager.checkNumberOfUsers() - 1) {
+  socket.on("choose card", (slotNumber, cardData) => {
+    gameManager.pushPresentationVideoCards(slotNumber, cardData);
+    if (gameManager.getPresentationVideoCards().filter((el)=>{return el != null}).length === gameManager.checkNumberOfUsers() - 1) {
       // this is for the judge, and is invoked when everyone has submitted
       console.log(gameManager.getPresentationVideoCards());
       io.sockets.emit("everyone submitted", gameManager.getPresentationVideoCards());
@@ -165,19 +168,21 @@ function startTimer() {
 
 // Reddit prompt creation
 function getRedditPrompt() {
-  const request = require('request')
-     ,url = 'https://www.reddit.com/r/funny/top/.json?count=20'
+  // const request = require('request')
+  //    ,url = 'https://www.reddit.com/r/funny/top/.json?count=20'
 
-  request(url, (error, response, body)=> {
-    if (!error && response.statusCode === 200) {
-      const redditResponse = JSON.parse(body)["data"]["children"];
-      let redditPrompts = [];
-      redditResponse.forEach(obj => redditPrompts.push(obj["data"]["title"]));
-      return redditPrompts;
-    } else {
-      console.log("Got an error: ", error, ", status code: ", response.statusCode);
-    }
-  });
+  // request(url, (error, response, body) => {
+  //   if (!error && response.statusCode === 200) {
+  //     const redditResponse = JSON.parse(body)["data"]["children"];
+  //     let redditPrompts = [];
+  //     redditResponse.forEach(obj => redditPrompts.push(obj["data"]["title"]));
+  //     return redditPrompts[0];
+  //   } else {
+  //     console.log("Got an error: ", error, ", status code: ", response.statusCode);
+  //     return error
+  //   }
+  // });
+  return "Donald trump impeached"
 }
 // Firestore
 async function getAllVideoCards() {
