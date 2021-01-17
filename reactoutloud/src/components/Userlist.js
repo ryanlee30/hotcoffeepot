@@ -44,7 +44,7 @@ class UserList extends Component {
                     return (
                         <Userbutton data={this.state.data[key]} id={key} key={key} onClick={() => handleListItemClick(key)} selected={this.state.selectedIndex === key}/>
                     );
-                    })}
+                })}
                 </List>
             </div>
         );
