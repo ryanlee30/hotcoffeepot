@@ -47,7 +47,12 @@ io.on("connection", socket => {
   });
   // when joined
   socket.on("join", name => {
+    console.log(`${name} joined`)
     utils.fillInSlot(gameManager.newUser(name), serverPlayerSlots, clientPlayerSlots);
-    socket.emit("joinData", clientPlayerSlots);
+    socket.emit("userData", clientPlayerSlots);
+  });
+
+  socket.on("request userData", () => {
+    socket.emit("userData", clientPlayerSlots);
   });
 });

@@ -25,7 +25,7 @@ class UploadPage extends Component {
       <div>
         <Header title='REACTION'/>
         <div class="horizontalStack">
-          <UserList/>
+          <UserList data={[null, null, null]}/>
           <VideoDisplay isJudging={true}/>
           <Timer remainingTime={this.props.timer} totalTime={30}/>
         </div>

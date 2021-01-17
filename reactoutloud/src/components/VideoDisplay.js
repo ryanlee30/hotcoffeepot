@@ -17,12 +17,19 @@ let coffeePotObj = {
   name: "that's an awfully hot coffee pot"
 }
 
+let test = {
+  id: "j9XUzV-GQyA",
+  startTime: 8,
+  duration: 20,
+  name: "hey"
+}
+
 class VideoDisplay extends Component {
   constructor(props) {
     super(props);
     this.state = {
       selectedVideo: null,
-      videoList: [realEstateObj, coffeePotObj, realEstateObj, realEstateObj, realEstateObj, realEstateObj, realEstateObj]
+      videoList: [realEstateObj, coffeePotObj, realEstateObj, realEstateObj, realEstateObj, realEstateObj, test]
     };
   }
 
@@ -45,7 +52,7 @@ class VideoDisplay extends Component {
       playerVars: {
         autoplay: 1,
         start: this.state.selectedVideo != null ? this.state.selectedVideo.startTime : 0,
-        end: this.state.selectedVideo != null ? this.state.selectedVideo.startTime + this.state.selectedVideo.duration : 0,
+        end: this.state.selectedVideo != null ? this.state.selectedVideo.startTime + this.state.selectedVideo.duration + 1 : 0,
         controls: 0,
         disablekb: 1,
         modestbranding: 1,
