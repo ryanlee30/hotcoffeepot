@@ -40,7 +40,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    socket.emit("request userData")
+    socket.emit("request userData");
     
     socket.on("userListData", data => {
       console.log("RECEIVED USERLIST DATA")
