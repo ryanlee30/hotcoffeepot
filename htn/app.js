@@ -9,12 +9,7 @@ const NUM_OF_CARDS = 7;
 const app = express();
 const server = http.createServer(app);
 const GameManager = require("./controllers/GameManager");
-<<<<<<< HEAD
-=======
 const StateManager = require("./controllers/StateManager");
-
-const { json } = require("express");
->>>>>>> 693fa6409e3573342b47d29eca64bc17f92bb6ff
 app.use(index);
 
 const io = require("socket.io")(server, {
@@ -29,13 +24,10 @@ server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 // Game related
 
 const gameManager = new GameManager(PTS_TO_WIN);
-<<<<<<< HEAD
 // put in video cards from firestore in below function
 gameManager.initializeVideoCards();
 gameManager.getVideoCards();
-=======
 const stateManager = new StateManager(PTS_TO_WIN);
->>>>>>> 693fa6409e3573342b47d29eca64bc17f92bb6ff
 // gameManager.newUser("ryan");
 // gameManager.newUser("marco");
 // gameManager.newUser("simon");
@@ -141,7 +133,6 @@ function getRedditPrompt() {
   const request = require('request')
      ,url = 'https://www.reddit.com/r/funny/top/.json?count=20'
 
-<<<<<<< HEAD
   request(url, (error, response, body)=> {
     if (!error && response.statusCode === 200) {
       const redditResponse = JSON.parse(body)["data"]["children"];
@@ -153,16 +144,6 @@ function getRedditPrompt() {
     }
   });
 }
-
-=======
-request(url, (error, response, body)=> {
-  if (!error && response.statusCode === 200) {
-    const redditResponse = JSON.parse(body)["data"]["children"];
-    // redditResponse.forEach(obj => console.log(obj["data"]["title"]))
-  } else {
-    console.log("Got an error: ", error, ", status code: ", response.statusCode);
-  }
-});
 
 const firebase = require('./firestore')
 // Firestore
@@ -179,4 +160,3 @@ async function getAllVideoCards() {
 }
 
 // getAllVideoCards()
->>>>>>> 693fa6409e3573342b47d29eca64bc17f92bb6ff
