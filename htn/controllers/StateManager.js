@@ -2,31 +2,34 @@ const gameStates = ["lobby", "upload", "review", "results"]
 
 class StateManager {
     constructor(ptsToWin) {
-        this.ptsToWin;
+        this.ptsToWin = ptsToWin;
         this.gameStateIndex = 0;
         this.clientPlayerStates = [];
     }
 
     //Temporary hard coded shit
-    nextGameState(clientPlayerSlots){
+    nextGameState(clientPlayerSlots) {
+        // if game is in lobby state
+        if (this.getGameState() === "lobby") {
+            this.gameStateIndex = 1;
+            return;
+        }
         // if game over
         for (let player of clientPlayerSlots) {
-            if (player.score === this.ptsToWin) {
-                this.gameStateIndex = 3;
-                return this.getGameState();
+            if (player) {
+                if (player.score === this.ptsToWin) {
+                    this.gameStateIndex = 3;
+                    return;
+                }
             }
         }
         // if game not over (2+ rounds)
-        for (let player of clientPlayerSlots) {
-            if (this.getGameState() === "upload")
-        }
-
-
-        if (this.gameStateIndex == 3) {
-            this.gameStateIndex = 0;
-        }
-        else {
-            this.gameStateIndex ++;
+        if (this.getGameState() === "upload") {
+            this.gameStateIndex = 2;
+            return;
+        } else if (this.getGameState() === "review") {
+            this.gameStateIndex = 1;
+            return;
         }
     }
 

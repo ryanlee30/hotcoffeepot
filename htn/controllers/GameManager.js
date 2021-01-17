@@ -56,11 +56,15 @@ class GameManager {
                     if (player.slotNumber === nonNullClientPlayerSlots[0].slotNumber) {
                         player.isJudge = true;
                         this.whoIsJudge = player;
+                    } else {
+                        player.isJudge = false;
                     }
                 } else {
                     if (player.slotNumber === nonNullClientPlayerSlots[currentJudgeIndex+1].slotNumber) {
                         player.isJudge = true;
                         this.whoIsJudge = player;
+                    } else {
+                        player.isJudge = false;
                     };
                 }
             }
@@ -108,6 +112,10 @@ class GameManager {
         }
       
         return array;
+    }
+
+    getWhoIsJudge() {
+        return this.whoIsJudge;
     }
 }
 

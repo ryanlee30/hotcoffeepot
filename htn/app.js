@@ -48,7 +48,8 @@ io.on("connection", socket => {
     let timer = setInterval(() => {
       if (counter <= 0) {
         clearInterval(timer);
-        io.sockets.emit("next state", stateManager.getClientPlayerStates(gameManager.getClientPlayerSlots));
+        stateManager.nextGameState(gameManager.getClientPlayerSlots());
+        updateGameState();
       }
       io.sockets.emit("timer", counter--);
     }, 1000);
@@ -66,7 +67,7 @@ io.on("connection", socket => {
     socket.emit("7 userCards", userCards);
   });
   // when components mount
-  socket.on("request userData", () => {
+  socket.on("request userListData", () => {
     socket.emit("userListData", gameManager.getClientPlayerSlots());
   });
   // when the game has officially started by someone pressing start game button
@@ -109,10 +110,11 @@ io.on("connection", socket => {
   socket.on("next judge", () => {
     gameManager.nextJudge();
     updateUserList();
+    console.log(gameManager.getWhoIsJudge());
   })
 
   socket.on("next gamestate", () => {
-    stateManager.nextGameState();
+    stateManager.nextGameState(gameManager.getClientPlayerSlots());
     updateGameState();
   })
 });
@@ -155,5 +157,3 @@ async function getAllVideoCards() {
   console.log(videoCards)
   return videoCards
 }
-
-// getAllVideoCards()
