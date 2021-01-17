@@ -35,6 +35,7 @@ class VideoDisplay extends Component {
   }
 
   componentDidMount(){
+    this.props.socket.emit("request presentation cards");
     this.props.socket.on("play video", videoCard => {
         if (!this.props.isJudging && !this.props.isChoosing){
           this.setState({
@@ -42,14 +43,28 @@ class VideoDisplay extends Component {
           })
         }
     })
+    this.props.socket.emit("request cards");
     this.props.socket.on("7 userCards", userCards => {
-      console.log(userCards);
+      if (!this.props.isJudging) {
+        this.setState({
+          videoList: userCards
+        })
+      }
+    })
+    this.props.socket.on("everyone submitted", presentationCards => {
+      if (this.props.isJudging) {
+        this.setState({
+          videoList: presentationCards
+        })
+      }
     })
   }
 
   render() {
     const handleButtonClick = (index) => {
-      this.props.socket.emit("request video", this.state.videoList[index])
+      if (this.props.isJudging) {
+        this.props.socket.emit("request video", this.state.videoList[index])
+      }
       this.setState({
         selectedIndex: index,
         selectedVideo: this.state.videoList[index]
@@ -63,7 +78,7 @@ class VideoDisplay extends Component {
     }
 
     const submitChoice = (selectedIndex) => {
-      console.log(this.state.videoList[selectedIndex])
+      this.props.socket.emit("choose card", this.state.videoList[selectedIndex]);
     }
 
     const opts = {
@@ -83,7 +98,7 @@ class VideoDisplay extends Component {
     return (
       <div>
           {
-            this.state.selectedVideo != null ? <YouTube videoId={this.state.selectedVideo.id} opts={opts} onEnd={() => handleVideoEnd()}/> : <div style={{backgroundColor: "gray", width: "866px", height: "488px"}}/>
+            this.state.selectedVideo != null ? <YouTube videoId={this.state.selectedVideo.videoID} opts={opts} onEnd={() => handleVideoEnd()}/> : <div style={{backgroundColor: "gray", width: "866px", height: "488px"}}/>
           }
           {
             this.props.isChoosing ? 

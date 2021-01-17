@@ -43,6 +43,7 @@ const stateManager = new StateManager(PTS_TO_WIN);
 // gameManager.nextJudge();
 // gameManager.nextJudge();
 // console.log(gameManager.getClientPlayerSlots());
+let timerPtr = null;
 
 io.on("connection", socket => {
   // when joined
@@ -53,12 +54,6 @@ io.on("connection", socket => {
       io.sockets.emit("check ready");
     }
     updateUserList();
-    // give each person in clientplayerslots 7 cards;
-    let userCards = [];
-    for (let i = 0; i < NUM_OF_CARDS; i++) {
-      userCards.push(gameManager.popVideoCards());
-    }
-    socket.emit("7 userCards", userCards);
   });
   // when left
   socket.on("left", userData => {
@@ -73,10 +68,18 @@ io.on("connection", socket => {
   socket.on("start game", () => {
     stateManager.nextGameState();
     updateGameState();
-    startTimer();
+    timerPtr = startTimer();
     gameManager.nextJudge();
     updateUserList();
   })
+  socket.on("request cards", () => {
+        // give each person in clientplayerslots 7 cards;
+        let userCards = [];
+        for (let i = 0; i < NUM_OF_CARDS; i++) {
+          userCards.push(gameManager.popVideoCards());
+        }
+        socket.emit("7 userCards", userCards);
+  });
   // after winner has been chosen and next round starts
   socket.on("next round", () => {
     io.sockets.emit("next round started", "");
@@ -94,9 +97,15 @@ io.on("connection", socket => {
   // when a client has finished choosing their card
   socket.on("choose card", cardData => {
     gameManager.pushPresentationVideoCards(cardData);
-    if (gameManager.getPresentationVideoCards().length === gameManager.getClientPlayerSlots().length) {
+    if (gameManager.getPresentationVideoCards().length === gameManager.checkNumberOfUsers() - 1) {
       // this is for the judge, and is invoked when everyone has submitted
+      console.log(gameManager.getPresentationVideoCards());
       io.sockets.emit("everyone submitted", gameManager.getPresentationVideoCards());
+      if (timerPtr) {
+        clearInterval(timerPtr);
+      }
+      stateManager.nextGameState(gameManager.getClientPlayerSlots());
+      updateGameState();
     }
     // shuffles cards
     // gameManager.getVideoCards();
@@ -106,6 +115,10 @@ io.on("connection", socket => {
   
   socket.on("request isJudge", (slotNumber) => {
     socket.emit("isJudge", gameManager.isJudge(slotNumber))
+  })
+
+  socket.on("request presentation cards", () => {
+    socket.emit("everyone submitted", gameManager.getPresentationVideoCards());
   })
 
   //for debugging
@@ -147,6 +160,7 @@ function startTimer() {
       }
       io.sockets.emit("timer", counter--);
     }, 1000);
+    return timer;
 }
 
 // Reddit prompt creation

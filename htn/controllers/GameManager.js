@@ -18,6 +18,16 @@ class GameManager {
         }
     }
 
+    checkNumberOfUsers() {
+        let counter = 0;
+        for (let player of this.clientPlayerSlots) {
+            if (player) {
+                counter++;
+            }
+        }
+        return counter;
+    }
+
     checkAtLeastThree() {
         return this.clientPlayerSlots.filter((player) => {
             return player !== null;
