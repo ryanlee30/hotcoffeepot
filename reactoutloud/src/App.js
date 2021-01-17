@@ -53,6 +53,10 @@ class App extends React.Component {
     socket.emit("next judge");
   }
 
+  sendVideo() {
+    socket.emit("request video")
+  }
+
   renderPage(gameState){
     switch(gameState){
       case "lobby":
@@ -140,6 +144,7 @@ class App extends React.Component {
           <Button onClick={this.startTimer}>Start timer</Button>
           <Button onClick={this.nextGameState}>Next game state (DEBUG)</Button>
           <Button onClick={this.nextJudge}>Next judge (DEBUG)</Button>
+          <Button onClick={this.sendVideo}>Send video (DEBUG)</Button>
         </div>
       </MuiThemeProvider>
     );

@@ -34,8 +34,19 @@ class VideoDisplay extends Component {
     };
   }
 
+  componentDidMount(){
+    this.props.socket.on("play video", videoCard => {
+        if (!this.props.isJudging && !this.props.isChoosing){
+          this.setState({
+            selectedVideo: videoCard
+          })
+        }
+    })
+  }
+
   render() {
     const handleButtonClick = (index) => {
+      this.props.socket.emit("request video", this.state.videoList[index])
       this.setState({
         selectedIndex: index,
         selectedVideo: this.state.videoList[index]

@@ -23,7 +23,7 @@ class ChoosingPage extends Component {
         <Header title='CHOOSING'/>
         <div class="horizontalStack">
           <UserList data={this.props.userListData}/>
-          <VideoDisplay isJudging={false} isChoosing={true}/>
+          <VideoDisplay isJudging={false} isChoosing={true} socket={this.props.socket}/>
           <Timer remainingTime={this.props.timer} totalTime={30}/>
         </div>
       </div>

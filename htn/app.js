@@ -105,7 +105,6 @@ io.on("connection", socket => {
     socket.emit("isJudge", gameManager.isJudge(slotNumber))
   })
 
-
   //for debugging
   socket.on("next judge", () => {
     gameManager.nextJudge();
@@ -120,6 +119,10 @@ io.on("connection", socket => {
 
   socket.on("request gamestate", () => {
     socket.emit("gameState", stateManager.getGameState());
+  })
+
+  socket.on("request video", (videoCard) => {
+    io.sockets.emit("play video", videoCard)
   })
 });
 
