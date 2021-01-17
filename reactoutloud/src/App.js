@@ -4,7 +4,7 @@ import UploadPage from "./components/UploadPage";
 const ENDPOINT = "http://127.0.0.1:4001";
 
 function App() {
-  const [timer, setTimer] = useState("");
+  const [timer, setTimer] = useState("30");
   const socket = socketIOClient(ENDPOINT);
 
   useEffect(() => {
@@ -19,8 +19,7 @@ function App() {
 
   return (
     <div>
-      <UploadPage/>
-      <p>{timer}</p>
+      <UploadPage timer={timer}/>
       <button onClick={startTimer}>Start!</button>
     </div>
   );

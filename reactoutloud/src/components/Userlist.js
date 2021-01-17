@@ -1,10 +1,5 @@
 import React, { Component } from 'react';
-import TextField from '@material-ui/core/TextField';
-import YouTube from 'react-youtube';
-import Timer from './Timer'
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 import Userbutton from './Userbutton'
 import socketIOClient from "socket.io-client";
 const ENDPOINT = "http://127.0.0.1:4001";
@@ -15,7 +10,11 @@ class UserList extends Component {
       super(props);
       this.state = {
         selectedIndex: -1,
+<<<<<<< HEAD
         data: []
+=======
+        data: [SimonObj, SeanObj, null]
+>>>>>>> f3cf5b2d1700004e1fc3e35e7f007f54be9c96b7
       };
     }
 
@@ -45,7 +44,7 @@ class UserList extends Component {
                     return (
                         <Userbutton data={this.state.data[key]} id={key} key={key} onClick={() => handleListItemClick(key)} selected={this.state.selectedIndex === key}/>
                     );
-                    })}
+                })}
                 </List>
                 <button onClick={this.joinGame}>Join</button>
             </div>
