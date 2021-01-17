@@ -58,7 +58,13 @@ io.on("connection", socket => {
   socket.on("join", name => {
     console.log(`${name} joined`);
     socket.emit("userData", gameManager.newUser(name));
-    updateUserList()
+    updateUserList();
+    // give each person in clientplayerslots 7 cards;
+    let userCards = [];
+    for (let i = 0; i < NUM_OF_CARDS; i++) {
+      userCards.push(gameManager.popVideoCards());
+    }
+    socket.emit("7 userCards", userCards);
   });
   // when components mount
   socket.on("request userData", () => {
@@ -73,21 +79,7 @@ io.on("connection", socket => {
     io.sockets.emit("next round started", "");
     io.sockets.emit("here is prompt", getRedditPrompt());
   })
-  // called on componentDidMount when game has started
-  socket.on("get cards", () => {
-    if (gameManager.getIsFirstRound()) {
-      // give each person in clientplayerslots 7 cards;
-      let userCards = [];
-      for (let i = 0; i < NUM_OF_CARDS; i++) {
-        userCards.push(gameManager.popVideoCards());
-      }
-      socket.emit("7 userCards", userCards);
-    } else {
-      gameManager.getVideoCards();
-      // give each person in clientplayerslots 1 card;
-      socket.emit("1 userCard", gameManager.popVideoCards());
-    }
-  });
+  // when a judge has chosen the winner
   socket.on("choose winner", winnerSlotNumber => {
     // increment a user's score, this one is only for the judge
     gameManager.chooseWinner(winnerSlotNumber);
@@ -96,11 +88,16 @@ io.on("connection", socket => {
     // clear presentation video cards arrary for next round
     gameManager.clearPresentationVideoCards();
   });
+  // when a client has finished choosing their card
   socket.on("choose card", cardData => {
     gameManager.pushPresentationVideoCards(cardData);
     if (gameManager.getPresentationVideoCards().length === gameManager.getClientPlayerSlots().length) {
       io.sockets.emit("everyone submitted", gameManager.getPresentationVideoCards());
     }
+    // shuffles cards
+    gameManager.getVideoCards();
+    // give each person in clientplayerslots 1 card;
+    socket.emit("1 userCard", gameManager.popVideoCards());
   });
   
   socket.on("request isJudge", (slotNumber) => {

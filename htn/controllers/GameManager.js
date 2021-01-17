@@ -6,7 +6,6 @@ class GameManager {
         this.clientPlayerSlots = new Array(10).fill(null);
         this.videoCards = [];
         this.presentationVideoCards = [];
-        this.isFirstRound = true;
     }
 
     newUser(name) {
@@ -84,10 +83,6 @@ class GameManager {
 
     clearPresentationVideoCards() {
         this.presentationVideoCards = [];
-    }
-
-    getIsFirstRound() {
-        return this.isFirstRound;
     }
 
     shuffleCards(array) {
