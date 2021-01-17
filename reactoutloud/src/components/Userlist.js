@@ -6,28 +6,29 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Userbutton from './Userbutton'
-
-let SimonObj = {
-    name: "Simon",
-    score: 6,
-    slotNumber: '1',
-    isJudge: false
-}
-
-let SeanObj = {
-    name: "Sean",
-    score: 6,
-    slotNumber: '2',
-    isJudge: true
-}
+import socketIOClient from "socket.io-client";
+const ENDPOINT = "http://127.0.0.1:4001";
+const socket = socketIOClient(ENDPOINT);
 
 class UserList extends Component {
     constructor(props) {
       super(props);
       this.state = {
         selectedIndex: -1,
-        data: [SimonObj, SeanObj]
+        data: []
       };
+    }
+
+    componentDidMount() {
+        socket.on("joinData", data => {
+            this.setState({
+                data: data,
+            })
+        });
+    }
+
+    joinGame() {
+        socket.emit("join", "hello");
     }
   
     render() {        
@@ -46,6 +47,7 @@ class UserList extends Component {
                     );
                     })}
                 </List>
+                <button onClick={this.joinGame}>Join</button>
             </div>
         );
     }

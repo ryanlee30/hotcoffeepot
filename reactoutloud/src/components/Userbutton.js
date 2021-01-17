@@ -10,7 +10,6 @@ import GavelIcon from '@material-ui/icons/Gavel';
 import AccessibilityIcon from '@material-ui/icons/Accessibility';
 
 class UserList extends Component {
-    bgColor = this.props.data.isJudge ? "red" : "blue"
     render() {        
         return (
             <div id="userButton">
