@@ -23,11 +23,11 @@ class UploadPage extends Component {
   render() {
     return (
       <div>
-        <Header title='REACT'/>
+        <Header title='REACTION'/>
         <div class="horizontalStack">
-          <Timer remainingTime={20} totalTime={40}/>
-          <VideoDisplay isJudging={true}/>
           <UserList/>
+          <VideoDisplay isJudging={true}/>
+          <Timer remainingTime={this.props.timer} totalTime={30}/>
         </div>
       </div>
     );

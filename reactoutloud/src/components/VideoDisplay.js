@@ -58,7 +58,7 @@ class VideoDisplay extends Component {
           {
             this.state.selectedVideo != null ? <YouTube videoId={this.state.selectedVideo.id} opts={opts} onEnd={() => handleVideoEnd()}/> : <div style={{backgroundColor: "gray", width: "866px", height: "488px"}}/>
           }
-          <ButtonGroup disabled={!this.props.isJudging} style={{width: '866px'}}>
+          <ButtonGroup disabled={!this.props.isJudging} style={{paddingTop: '20px', width: '866px'}}>
               {Object.keys(this.state.videoList).map(key => {
                   return (
                       <Button onClick={() => handleButtonClick(key)}>{this.state.videoList[key].name}</Button>

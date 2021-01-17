@@ -21,7 +21,7 @@ class UserList extends Component {
       super(props);
       this.state = {
         selectedIndex: -1,
-        data: [SimonObj, SeanObj]
+        data: [SimonObj, SeanObj, null]
       };
     }
   
