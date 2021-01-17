@@ -17,7 +17,7 @@ class UserList extends Component {
                             { this.props.data.isJudge ? <GavelIcon/> : <AccessibilityIcon/>}
                         </ListItemIcon>
                         <ListItemText primary={this.props.data.name} style={{color: "white"}}/>
-                        <ListItemText primary={this.props.data.score} style={{color: "white", textAlign: "right"}}/>
+                        <ListItemText primary={this.props.data.isJudge ? "Judging" : this.props.data.score} style={{color: "white", textAlign: "right"}}/>
                     </ListItem>
 
                     :
