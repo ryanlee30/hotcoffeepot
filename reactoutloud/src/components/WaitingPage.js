@@ -19,8 +19,8 @@ class WaitingPage extends Component {
         hasJoined: false,
         userName: ""
       };
-      this.handleTextFieldChange = this.handleTextFieldChange.bind(this)
-      this.joinGame = this.joinGame.bind(this)
+      this.handleTextFieldChange = this.handleTextFieldChange.bind(this);
+      this.joinGame = this.joinGame.bind(this);
     }
 
     joinGame() {

@@ -34,7 +34,7 @@ class App extends React.Component {
   componentDidMount() {
     socket.emit("request userData")
     
-    socket.on("userData", data => {
+    socket.on("userListData", data => {
       console.log("RECEIVED USER DATA")
       this.setState({
           data: data,
@@ -47,9 +47,13 @@ class App extends React.Component {
         timer: time
       })
     });
+
+    socket.on("userData", data => {
+      console.log(data);
+    });
   }
 
-  render(){
+  render() {
     return (
       <MuiThemeProvider theme={theme}>
         <div>
@@ -59,7 +63,6 @@ class App extends React.Component {
       </MuiThemeProvider>
     );
   }
-  
 }
 
 export default App;
