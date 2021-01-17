@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import socketIOClient from "socket.io-client";
 import ChoosingPage from "./components/ChoosingPage";
-import WaitingPage from "./components/WaitingPage";
+import LobbyPage from "./components/LobbyPage";
 import JudgingPage from "./components/JudgingPage";
 import ViewingPage from "./components/ViewingPage";
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
@@ -28,7 +28,10 @@ class App extends React.Component {
     this.state = {
       timer: "30",
       hasJoined: false,
+      gameState: "waiting"
     };
+
+    // this.renderPage = this.renderPage.bind(this)
   }
 
   startTimer() {
@@ -39,8 +42,27 @@ class App extends React.Component {
     socket.emit("next gamestate");
   }
 
+  nextJudge() {
+    socket.emit("next judge");
+  }
+
+  renderPage(gameState){
+    switch(gameState){
+      case "judging":
+        return(<JudgingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined}/>);
+      case "choosing":
+        return(<ChoosingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined}/>);
+      case "waiting":
+        return(<LobbyPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined}/>);
+      case "viewing":
+        return(<ViewingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined}/>);
+      default:
+        return(<h1>UNKNOWN GAME STATE</h1>)
+    }
+  }
+
   componentDidMount() {
-    socket.emit("request userData");
+    socket.emit("request userListData")
     
     socket.on("userListData", data => {
       console.log("RECEIVED USERLIST DATA")
@@ -70,6 +92,9 @@ class App extends React.Component {
 
     socket.on("gameState", newState => {
       console.log("new game state: " + newState)
+      this.setState({
+        gameState: newState
+      })
     })
   }
 
@@ -77,12 +102,12 @@ class App extends React.Component {
     return (
       <MuiThemeProvider theme={theme}>
         <div>
-          <JudgingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined}/>
-          <ChoosingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined}/>
-          <WaitingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined}/>
-          <ViewingPage timer={this.state.timer} userListData={this.state.userListData} socket={socket} hasJoined={this.state.hasJoined}/>
+          {
+            this.renderPage(this.state.gameState)
+          }
           <Button onClick={this.startTimer}>Start timer</Button>
-          <Button onClick={this.nextGameState}>Next game state</Button>
+          <Button onClick={this.nextGameState}>Next game state (DEBUG)</Button>
+          <Button onClick={this.nextJudge}>Next judge (DEBUG)</Button>
         </div>
       </MuiThemeProvider>
     );

@@ -5,7 +5,7 @@ import Timer from './Timer'
 import Header from './Header'
 import '../styles.scss';
 
-class WaitingPage extends Component {
+class LobbyPage extends Component {
     constructor(props) {
       super(props);
       this.state = {
@@ -16,15 +16,10 @@ class WaitingPage extends Component {
       };
       this.handleTextFieldChange = this.handleTextFieldChange.bind(this);
       this.joinGame = this.joinGame.bind(this);
-      this.nextJudge = this.nextJudge.bind(this);
     }
 
     joinGame() {
         this.props.socket.emit("join", this.state.userName);
-    }
-
-    nextJudge() {
-        this.props.socket.emit("next judge");
     }
     
     handleTextFieldChange(event) {
@@ -37,7 +32,7 @@ class WaitingPage extends Component {
     render() {
         return (
             <div>
-                <Header title='WAITING'/>
+                <Header title='LOBBY'/>
                 <div class="horizontalStack">
                     <UserList data={this.props.userListData}/>
                     <div class="verticalStack">
@@ -57,11 +52,6 @@ class WaitingPage extends Component {
                             disabled={this.props.hasJoined || this.state.userName === ""}
                             style={{width: "200px", color: "white"}}>Join</Button>
 
-                        <Button 
-                            color="primary"
-                            variant="contained" 
-                            onClick={this.nextJudge} 
-                            style={{width: "200px", color: "white"}}>Next Judge (DEBUG)</Button>
                     </div>
                     <Timer remainingTime={this.props.timer} totalTime={30}/>
                 </div>
@@ -70,5 +60,5 @@ class WaitingPage extends Component {
     }
   }
   
-  export default WaitingPage
+  export default LobbyPage
   

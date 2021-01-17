@@ -1,10 +1,10 @@
-gameStates = ["waiting", "judging", "viewing", "choosing"]
+gameStates = ["waiting", "upload", "review", "results"]
 
-class GameManager {
+class StateManager {
     constructor() {
         this.gameStateIndex = 0
     }
-    
+
     //Temporary hard coded shit
     nextGameState(){
         if (this.gameStateIndex == 3) {
@@ -20,4 +20,4 @@ class GameManager {
     }
 }
 
-module.exports = GameManager
+module.exports = StateManager

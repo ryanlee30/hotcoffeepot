@@ -67,7 +67,7 @@ io.on("connection", socket => {
     socket.emit("7 userCards", userCards);
   });
   // when components mount
-  socket.on("request userData", () => {
+  socket.on("request userListData", () => {
     socket.emit("userListData", gameManager.getClientPlayerSlots());
   });
   // when the game has officially started by someone pressing start game button
@@ -103,7 +103,6 @@ io.on("connection", socket => {
   socket.on("request isJudge", (slotNumber) => {
     socket.emit("isJudge", gameManager.isJudge(slotNumber))
   })
-
 
   //for debugging
   socket.on("next judge", () => {
