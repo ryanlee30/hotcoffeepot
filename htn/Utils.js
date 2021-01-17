@@ -1,9 +1,9 @@
-function fillInSlot(joinedPlayer, playerSlots) {
-    for (let i = 0; i < playerSlots.length; i++) {
-        if (!playerSlots[i]) {
-            playerSlots[i] = joinedPlayer;
-            // returns player's position in slots, 1-based
-            return i+1;
+function fillInSlot(joinedPlayer, serverPlayerSlots, clientPlayerSlots) {
+    for (let i = 0; i < serverPlayerSlots.length; i++) {
+        if (!serverPlayerSlots[i]) {
+            serverPlayerSlots[i] = joinedPlayer;
+            clientPlayerSlots[i] = {name: joinedPlayer.getName(), score: 0, slotNumber: i+1, isJudge: i+1 === 1};
+            break;
         }
     }
 }

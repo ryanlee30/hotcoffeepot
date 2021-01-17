@@ -19,7 +19,23 @@ const io = require("socket.io")(server, {
   }
 });
 
+server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+
+// Game related
+
+const gameManager = new GameManager(PTS_TO_WIN);
+let serverPlayerSlots = new Array(10).fill(null);
+let clientPlayerSlots = new Array(10).fill(null);
+// let ryan = gameManager.newUser("ryan");
+// let marco = gameManager.newUser("marco");
+// let simon = gameManager.newUser("simon");
+// let sean = gameManager.newUser("sean");
+// gameManager.chooseWinner(ryan);
+// gameManager.removeUser(simon);
+// console.log(gameManager.getUsers());
+
 io.on("connection", socket => {
+  // timer
   socket.on("start", function() {
     let counter = 30;
     let timer = setInterval(() => {
@@ -28,19 +44,10 @@ io.on("connection", socket => {
       }
       socket.emit("timer", counter--);
     }, 1000);
-  })
+  });
+  // when joined
+  socket.on("join", name => {
+    utils.fillInSlot(gameManager.newUser(name), serverPlayerSlots, clientPlayerSlots);
+    socket.emit("joinData", clientPlayerSlots);
+  });
 });
-
-server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
-
-// Game related
-
-const gameManager = new GameManager(PTS_TO_WIN);
-let ryan = gameManager.newUser("ryan");
-let marco = gameManager.newUser("marco");
-let simon = gameManager.newUser("simon");
-let sean = gameManager.newUser("sean");
-let playerSlots = new Array(10).fill(null);
-gameManager.chooseWinner(ryan);
-gameManager.removeUser(simon);
-console.log(gameManager.getUsers());
