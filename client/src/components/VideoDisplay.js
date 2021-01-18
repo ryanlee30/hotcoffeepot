@@ -134,8 +134,6 @@ class VideoDisplay extends Component {
             </div>
             : <span/>
           }
-
-          
       </div>
     );
   }
