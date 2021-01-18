@@ -1,4 +1,5 @@
 const NUM_OF_CARDS = 7;
+const MAX_SHUFFLE_COUNTER = 5; //after this many rounds, the cards will be shuffled
 
 class GameManager {
     constructor(ptsToWin) {
@@ -9,6 +10,7 @@ class GameManager {
         this.videoCards = [];
         this.clientVideoCards = new Array(10).fill([]);
         this.presentationVideoCards = new Array(10).fill(null);
+        this.shuffleCounter = 0
     }
 
     newUser(name) {
@@ -66,11 +68,18 @@ class GameManager {
     }
 
     initializeVideoCards(videoCards) {
-        this.videoCards = videoCards;
+        this.videoCards = this.shuffleCards(videoCards);
     }
 
     chooseWinner(slotNumber) {
         this.clientPlayerSlots[slotNumber-1].score++;
+        
+        //chooseWinner is called once a round, so shuffleCounter work here
+        this.shuffleCounter++;
+        if (this.shuffleCounter == MAX_SHUFFLE_COUNTER){
+            this.videoCards = this.shuffleCards(videoCards);
+            this.shuffleCounter = 0
+        }
     }
 
     isJudge(slotNumber){
