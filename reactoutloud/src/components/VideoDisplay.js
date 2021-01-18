@@ -30,7 +30,8 @@ class VideoDisplay extends Component {
     this.state = {
       selectedIndex: -1,
       selectedVideo: null,
-      videoList: [realEstateObj, coffeePotObj, realEstateObj, realEstateObj, realEstateObj, realEstateObj, test]
+      videoList: [realEstateObj, coffeePotObj, realEstateObj, realEstateObj, realEstateObj, realEstateObj, test],
+      submitted: false
     };
   }
 
@@ -47,7 +48,8 @@ class VideoDisplay extends Component {
     this.props.socket.on("7 userCards", userCards => {
       if (!this.props.isJudging) {
         this.setState({
-          videoList: userCards
+          videoList: userCards,
+          submitted: false
         })
       }
     })
@@ -81,6 +83,9 @@ class VideoDisplay extends Component {
 
     const submitChoice = (selectedIndex) => {
       console.log("selected index is " + selectedIndex)
+      this.setState({
+        submitted: true
+      });
       if(!this.props.isJudging){
         this.props.socket.emit("choose card", this.props.userData.slotNumber, this.state.videoList[selectedIndex]);
       }
@@ -123,7 +128,7 @@ class VideoDisplay extends Component {
 
               <Button color="primary"
                       variant="contained" 
-                      disabled={this.state.selectedIndex == -1} 
+                      disabled={this.state.selectedIndex == -1 || this.state.submitted} 
                       onClick={() => submitChoice(this.state.selectedIndex)} 
                       style={{height: "50px", color: "white"}}>{this.props.isJudging ? "Choose Winner" : "Submit"}</Button>
             </div>
