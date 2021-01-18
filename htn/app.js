@@ -4,7 +4,6 @@ const http = require("http");
 const PORT = process.env.PORT || 4001;
 const index = require("./routes/index");
 const PTS_TO_WIN = 10;
-const NUM_OF_CARDS = 7;
 const firebase = require('./firestore')
 
 const app = express();
@@ -50,7 +49,7 @@ io.on("connection", socket => {
   socket.on("join", name => {
     console.log(`${name} joined`);
     socket.emit("userData", gameManager.newUser(name));
-    if (gameManager.checkAtLeastThree()) {
+    if (gameManager.checkNumberOfUsers() >= 3) {
       io.sockets.emit("check ready");
     }
     updateUserList();
@@ -73,13 +72,9 @@ io.on("connection", socket => {
     io.sockets.emit("here is prompt", getRedditPrompt());
     updateUserList();
   })
-  socket.on("request cards", () => {
-        // give each person in clientplayerslots 7 cards;
-        let userCards = [];
-        for (let i = 0; i < NUM_OF_CARDS; i++) {
-          userCards.push(gameManager.popVideoCards());
-        }
-        socket.emit("7 userCards", userCards);
+  socket.on("request cards", (slotNumber) => {
+      //give the 7 cards belonging to user with specified slotNumber      
+      socket.emit("7 userCards", gameManager.getClientVideoCards(slotNumber));
   });
   // after winner has been chosen and next round starts
   socket.on("next round", () => {
@@ -89,31 +84,34 @@ io.on("connection", socket => {
   // when a judge has chosen the winner
   socket.on("choose winner", winnerSlotNumber => {
     // increment a user's score, this one is only for the judge
+    console.log("choosing winner with slot number " + winnerSlotNumber)
     gameManager.chooseWinner(winnerSlotNumber);
+    gameManager.nextJudge();
     stateManager.nextGameState(gameManager.getClientPlayerSlots());
     updateGameState();
     timerPtr = startTimer();
-    gameManager.nextJudge();
     io.sockets.emit("here is prompt", getRedditPrompt());
     updateUserList();
   });
   // when a client has finished choosing their card
   socket.on("choose card", (slotNumber, cardData) => {
     gameManager.pushPresentationVideoCards(slotNumber, cardData);
+    gameManager.removeSingleClientVideoCard(slotNumber, cardData);
     if (gameManager.getPresentationVideoCards().filter((el)=>{return el != null}).length === gameManager.checkNumberOfUsers() - 1) {
       // this is for the judge, and is invoked when everyone has submitted
-      console.log(gameManager.getPresentationVideoCards());
+      // console.log(gameManager.getPresentationVideoCards());
       io.sockets.emit("everyone submitted", gameManager.getPresentationVideoCards());
       if (timerPtr) {
         clearInterval(timerPtr);
       }
+
       stateManager.nextGameState(gameManager.getClientPlayerSlots());
       updateGameState();
     }
     // shuffles cards
     // gameManager.getVideoCards();
     // give each person in clientplayerslots 1 card;
-    socket.emit("1 userCard", gameManager.popVideoCards());
+    // socket.emit("1 userCard", gameManager.popVideoCards());
   });
   
   socket.on("request isJudge", (slotNumber) => {

@@ -1,3 +1,5 @@
+const NUM_OF_CARDS = 7;
+
 class GameManager {
     constructor(ptsToWin) {
         this.ptsToWin = ptsToWin;
@@ -5,6 +7,7 @@ class GameManager {
         this.isGameOver = false;
         this.clientPlayerSlots = new Array(10).fill(null);
         this.videoCards = [];
+        this.clientVideoCards = new Array(10).fill([]);
         this.presentationVideoCards = new Array(10).fill(null);
     }
 
@@ -13,25 +16,49 @@ class GameManager {
             if (!this.clientPlayerSlots[i]) {
                 let userObject = {name: name, score: 0, slotNumber: i+1, isJudge: false}
                 this.clientPlayerSlots[i] = userObject;
+                this.clearClientVideoCards(i + 1) // ensure the cards in that slot are empty
+                //poplate the video cards for the new user
+                for (let j = 0; j < NUM_OF_CARDS; j++) {
+                    this.clientVideoCards[i].push(this.popVideoCard());
+                }
                 return userObject;
             }
         }
     }
 
-    checkNumberOfUsers() {
-        let counter = 0;
-        for (let player of this.clientPlayerSlots) {
-            if (player) {
-                counter++;
-            }
-        }
-        return counter;
+    getClientVideoCards(slotNumber){
+        // console.log("getting client video cards for slot number " + slotNumber)
+        // console.log(this.clientVideoCards[slotNumber - 1])
+        //returns cards belonging to a user
+        return this.clientVideoCards[slotNumber - 1]
     }
 
-    checkAtLeastThree() {
+    clearClientVideoCards(slotNumber){
+        //clears the video cards belonging to a user
+        if (this.clientVideoCards[slotNumber - 1].length > 0){
+            this.videoCards.push(this.clientVideoCards[slotNumber - 1])
+        }
+        this.clientVideoCards[slotNumber - 1] = []
+    }
+
+    removeSingleClientVideoCard(slotNumber, cardData){
+        //this function removes the a specific card from a user, 
+        //puts it back in the full card stack, and give the user a new card
+        //Args: [slotNumber]: slotNumber of user, [cardData]: cardData of the card to remove
+        let newVideoCards = this.clientVideoCards[slotNumber - 1].filter((el) => {
+            return el.videoID !== cardData.videoID
+        })
+        // console.log("New video cards for " + this.clientPlayerSlots[slotNumber - 1].name + ":");
+        // console.log(newVideoCards)
+        newVideoCards.push(this.popVideoCard()) // put a new card in the client's video stack
+        this.videoCards.push(cardData) // put the new card back in full video card stack
+        this.clientVideoCards[slotNumber - 1] = newVideoCards
+    }
+
+    checkNumberOfUsers() {
         return this.clientPlayerSlots.filter((player) => {
             return player !== null;
-        }).length >= 3;
+        }).length;
     }
 
     removeUser(slotNumber) {
@@ -91,11 +118,11 @@ class GameManager {
         return this.clientPlayerSlots;
     }
 
-    getVideoCards() {
+    getAllVideoCards() {
         return this.shuffleCards(this.videoCards);
     }
 
-    popVideoCards() {
+    popVideoCard() {
         return this.videoCards.pop();
     }
 
@@ -105,11 +132,15 @@ class GameManager {
 
     pushPresentationVideoCards(slotNumber, card) {
         // this.presentationVideoCards.push(card);
-        this.presentationVideoCards[slotNumber] = card
+        this.presentationVideoCards[slotNumber-1] = card
     }
 
     clearPresentationVideoCards() {
         this.presentationVideoCards = new Array(10).fill(null);
+    }
+
+    chooseRemoveCard(){
+
     }
 
     shuffleCards(array) {

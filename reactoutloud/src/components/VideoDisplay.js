@@ -43,7 +43,7 @@ class VideoDisplay extends Component {
           })
         }
     })
-    this.props.socket.emit("request cards");
+    this.props.socket.emit("request cards", this.props.userData.slotNumber);
     this.props.socket.on("7 userCards", userCards => {
       if (!this.props.isJudging) {
         this.setState({
@@ -63,6 +63,7 @@ class VideoDisplay extends Component {
 
   render() {
     const handleButtonClick = (index) => {
+      console.log('clicked button with index ' + index)
       if (this.props.isJudging) {
         this.props.socket.emit("request video", this.state.videoList[index])
       }
@@ -79,11 +80,12 @@ class VideoDisplay extends Component {
     }
 
     const submitChoice = (selectedIndex) => {
+      console.log("selected index is " + selectedIndex)
       if(!this.props.isJudging){
         this.props.socket.emit("choose card", this.props.userData.slotNumber, this.state.videoList[selectedIndex]);
       }
       else{
-        this.props.socket.emit("choose winner", selectedIndex)
+        this.props.socket.emit("choose winner", Number(selectedIndex)+1)
       }
     }
 
