@@ -138,11 +138,7 @@ class GameManager {
     clearPresentationVideoCards() {
         this.presentationVideoCards = new Array(10).fill(null);
     }
-
-    chooseRemoveCard(){
-
-    }
-
+    
     shuffleCards(array) {
         var currentIndex = array.length, temporaryValue, randomIndex;
       

@@ -26,6 +26,8 @@ server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 const gameManager = new GameManager(PTS_TO_WIN);
 getAllVideoCards().then(data => {
   gameManager.initializeVideoCards(data)});
+
+getRedditPrompts()
 // put in video cards from firestore in below function
 // gameManager.initializeVideoCards();
 // gameManager.getVideoCards();
@@ -69,7 +71,7 @@ io.on("connection", socket => {
     updateGameState();
     timerPtr = startTimer();
     gameManager.nextJudge();
-    io.sockets.emit("here is prompt", getRedditPrompt());
+    io.sockets.emit("here is prompt", getOneRedditPrompt());
     updateUserList();
   })
   socket.on("request cards", (slotNumber) => {
@@ -91,7 +93,7 @@ io.on("connection", socket => {
     stateManager.nextGameState(gameManager.getClientPlayerSlots());
     updateGameState();
     timerPtr = startTimer();
-    io.sockets.emit("here is prompt", getRedditPrompt());
+    io.sockets.emit("here is prompt", getOneRedditPrompt());
     updateUserList();
   });
   // when a client has finished choosing their card
@@ -165,24 +167,52 @@ function startTimer() {
     return timer;
 }
 
-// Reddit prompt creation
-function getRedditPrompt() {
-  // const request = require('request')
-  //    ,url = 'https://www.reddit.com/r/funny/top/.json?count=20'
+let redditPrompts = [];
 
-  // request(url, (error, response, body) => {
-  //   if (!error && response.statusCode === 200) {
-  //     const redditResponse = JSON.parse(body)["data"]["children"];
-  //     let redditPrompts = [];
-  //     redditResponse.forEach(obj => redditPrompts.push(obj["data"]["title"]));
-  //     return redditPrompts[0];
-  //   } else {
-  //     console.log("Got an error: ", error, ", status code: ", response.statusCode);
-  //     return error
-  //   }
-  // });
-  return "Donald trump impeached"
+function getOneRedditPrompt(){
+  newPrompt = redditPrompts.pop()
+  if (redditPrompts.length <= 2){
+    getRedditPrompts()
+  }
+  return newPrompt
 }
+// Reddit prompt creation
+function getRedditPrompts() {
+  const request = require('request')
+     ,url = 'https://www.reddit.com/r/funny/top/.json?count=20'
+
+  request(url, (error, response, body) => {
+    if (!error && response.statusCode === 200) {
+      const redditResponse = JSON.parse(body)["data"]["children"];
+      redditResponse.forEach(obj => redditPrompts.push(obj["data"]["title"]));
+      redditPrompts = shuffle(redditPrompts)
+    } else {
+      console.log("Got an error: ", error, ", status code: ", response.statusCode);
+      return error
+    }
+  });
+}
+
+https://stackoverflow.com/a/2450976
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
+
 // Firestore
 async function getAllVideoCards() {
   const db = firebase.firestore();
