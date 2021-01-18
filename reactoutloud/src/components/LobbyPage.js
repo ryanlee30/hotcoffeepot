@@ -64,7 +64,8 @@ class LobbyPage extends Component {
                             variant="contained" 
                             onClick={this.joinGame} 
                             disabled={this.props.hasJoined || this.state.userName === ""}
-                            style={{width: "200px", color: "white"}}>Join</Button>
+                            style={{width: "200px", color: "white", marginBottom: "20px"}}>Join</Button>
+
                         <Button 
                             color="primary"
                             variant="contained" 
