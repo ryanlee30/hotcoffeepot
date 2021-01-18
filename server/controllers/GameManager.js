@@ -83,7 +83,7 @@ class GameManager {
     }
 
     isJudge(slotNumber){
-        return this.clientPlayerSlots[slotNumber-1].isJudge
+        return this.clientPlayerSlots[slotNumber - 1].isJudge
     }
 
     nextJudge() {

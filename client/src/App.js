@@ -12,6 +12,7 @@ import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button'
 
 const ENDPOINT = "https://proud-zebra-92.loca.lt";
+// const ENDPOINT = "http://127.0.0.1:4001";
 const socket = socketIOClient(ENDPOINT);
 
 const theme = createMuiTheme({
