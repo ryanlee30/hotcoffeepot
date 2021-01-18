@@ -11,6 +11,7 @@ body {
 .horizontalStack{
     display: flex;
     flex-direction: row;
+    align-items: center;
     & > * {
         padding: 20px;
         flex-grow: 1

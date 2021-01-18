@@ -121,7 +121,7 @@ class VideoDisplay extends Component {
                       return (
                           this.state.videoList[key] ? 
                           <Button onClick={() => handleButtonClick(key)} variant={this.state.selectedIndex === key ? "outlined" : "contained"}>{this.state.videoList[key].name}</Button> :
-                          <Button disabled variant={"outlined"}>Not available</Button>
+                          <span></span>
                       );
                   })}
               </ButtonGroup> 
