@@ -87,6 +87,7 @@ io.on("connection", socket => {
     console.log("choosing winner with slot number " + winnerSlotNumber)
     gameManager.chooseWinner(winnerSlotNumber);
     gameManager.nextJudge();
+    gameManager.clearPresentationVideoCards();
     stateManager.nextGameState(gameManager.getClientPlayerSlots());
     updateGameState();
     timerPtr = startTimer();
